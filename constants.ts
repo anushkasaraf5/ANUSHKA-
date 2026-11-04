@@ -87,6 +87,62 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
 
 export const PROJECTS: Project[] = [
   {
+    id: "6",
+    title: "Visual Transformation",
+    category: "Lettering",
+    date: "October, 2025",
+    description: "A freehand alphabet inspired by nature—drawing from the forms, textures, and growth patterns of trees, plants, vines, or fungi.",
+    thumbnailUrl: "https://i.ibb.co/S488Nw33/Gemini-Generated-Image-ey47fwey47fwey47.png",
+    details: {
+      overview: "Fuchsia is a genus of flowering shrubs and small trees native to Central and South America. Known for their pendulous, ballerina-like blossoms in striking red and purple hues, these plants thrive in cool, shaded, and moist environments. Beyond their beauty, fuchsias symbolize delicacy, elegance, and confiding love.",
+      problem: "The challenge was to create a freehand alphabet or font inspired by nature, letting letterforms reflect organic structure and express a chosen theme or emotion through their flow and character.",
+      process: "The design process involved translating the biological traits of the Fuchsia plant into typographic forms. From the bell-shaped blossoms to the lance-shaped leaves, every curve mimics organic plant growth.",
+      processSteps: [
+        { title: "Organic Structure", description: "Drawing from the forms, textures, and growth patterns of trees, plants, vines, or fungi to create a cohesive alphabet." },
+        { title: "Fuchsia Inspiration", description: "Analyzing the pendulous, ballerina-like blossoms and their striking red and purple hues to inform the color palette and form." },
+        { title: "Anatomy Translation", description: "Translating features like 'drooping buds', 'succulent texture', and 'juicy interior' into letter strokes." },
+        { title: "Rhythmic Variation", description: "Creating rhythmic variation to avoid monotony, expressing depth and the layered anatomy of a fuchsia bloom." },
+        { title: "Continuous Flow", description: "Using continuous curves to mimic organic plant growth, with twisting branches topped with buds capturing the plant's cascading nature." }
+      ],
+      conceptNote: "VIVUS, meaning “alive,” is a typeface inspired by the fuchsia flower’s grace and vitality. Its soft yet structured forms reflect harmony between resilience and elegance, using vibrant hues of pink, purple, and green to express growth and transformation.",
+      outcome: "A unique typeface 'VIVUS' that captures the essence of the Fuchsia flower. The dual-petal structure hints at an open flower, while the simplest petal gives visual breathing space. The result is a design that is not just a font, but a reflection of organic life.",
+      gallery: [
+    "https://i.ibb.co/5hpzVw00/assignment-1-13.jpg",
+    "https://i.ibb.co/4whQzC5L/assignment-1-16.jpg",
+    "https://i.ibb.co/cSgvXp1d/assignment-1-15.jpg",
+    "https://i.ibb.co/HL2L9qbN/assignment-1-14.jpg"
+       ]
+    }
+  },  
+  {
+    id: "1",
+    title: "Type & Emotion",
+    category: "UX Research",
+    date: "August, 2025",
+    description: "A research case study on cross-generational emotional responses to multilingual script variations across 47 participants, examining Marwari, Bengali, Telugu, and Tamil typography.",
+    thumbnailUrl: "/assets/behance_poster_mockup.jpg",
+    details: {
+      overview: "An empirical design research study exploring how script variations in multilingual design shape emotional responses across different age groups. Examining Marwari, Bengali, Telugu, and Tamil scripts across 47 participants, this study investigates generational interpretation, abstraction tolerance, and cultural resonance.",
+      problem: "There is a lack of empirical understanding of how script variations in multilingual design shape emotional responses across different age groups. Designers often make typographic choices without insight into how these resonate culturally or emotionally, which can lead to disengagement or miscommunication.",
+      process: "A quantitative and qualitative study utilizing 4 expressive typographic stimuli without imagery or icons, capturing participant emotional interpretations across 18–25, 26–45, and 46+ age cohorts through Likert and open-ended surveys.",
+      processSteps: [
+        { title: "01. Research Problem & Objectives", description: "Formulating core inquiries on how script variations emotionally impact diverse generational groups in multilingual contexts." },
+        { title: "02. Expressive Script Stimuli", description: "Crafting 4 typographic specimens conveying conceptual messages purely through script form in Marwari, Bengali, Telugu, and Tamil." },
+        { title: "03. Stratified Survey (N=47)", description: "Testing emotional interpretations across three age groups: 18–25 (Youth, 70.2%), 26–45 (Middle-aged, 14.9%), and 46+ (Older adults, 14.9%)." },
+        { title: "04. Generational & Thematic Analysis", description: "Mapping participant selections across emotional axes: introspection vs. neutrality, symbolism vs. surface, and emotional vs. technical descriptors." },
+        { title: "05. Inclusive Typography Poster Deliverable", description: "Synthesizing multi-script integration, typographic emotion mapping, and textured typography into an architectural research poster." }
+      ],
+      gallery: [
+        "/assets/behance_poster_mockup.jpg",
+        "/poster_preview.jpg",
+        "/assets/aistudio/WhatsApp_Image_2026-11-02_at_10.32.25__1__70aae0e4.jpeg",
+        "/assets/aistudio/WhatsApp_Image_2026-11-02_at_10.32.26__2__e6543967.jpeg",
+        "/assets/aistudio/WhatsApp_Image_2026-11-02_at_10.32.26__3__d983e353.jpeg",
+        "/assets/aistudio/WhatsApp_Image_2026-11-03_at_14.24.26_8cdef135.jpeg"
+      ]
+    }
+  },
+  {
     id: "3",
     title: "Event Journey Card: Academic Event System",
     category: "Systems Design",
@@ -115,63 +171,6 @@ export const PROJECTS: Project[] = [
         "/assets/projects/systems-design/systems_slide_16.png",
         "/assets/projects/systems-design/journey_card_03.png",
         "/assets/projects/systems-design/journey_card_07.png"
-      ]
-    }
-  },
-  {
-    id: "6",
-    title: "Visual Transformation",
-    category: "Lettering",
-    date: "October, 2025",
-    description: "A freehand alphabet inspired by nature—drawing from the forms, textures, and growth patterns of trees, plants, vines, or fungi.",
-    thumbnailUrl: "https://i.ibb.co/S488Nw33/Gemini-Generated-Image-ey47fwey47fwey47.png",
-    details: {
-      overview: "Fuchsia is a genus of flowering shrubs and small trees native to Central and South America. Known for their pendulous, ballerina-like blossoms in striking red and purple hues, these plants thrive in cool, shaded, and moist environments. Beyond their beauty, fuchsias symbolize delicacy, elegance, and confiding love.",
-      problem: "The challenge was to create a freehand alphabet or font inspired by nature, letting letterforms reflect organic structure and express a chosen theme or emotion through their flow and character.",
-      process: "The design process involved translating the biological traits of the Fuchsia plant into typographic forms. From the bell-shaped blossoms to the lance-shaped leaves, every curve mimics organic plant growth.",
-      processSteps: [
-        { title: "Organic Structure", description: "Drawing from the forms, textures, and growth patterns of trees, plants, vines, or fungi to create a cohesive alphabet." },
-        { title: "Fuchsia Inspiration", description: "Analyzing the pendulous, ballerina-like blossoms and their striking red and purple hues to inform the color palette and form." },
-        { title: "Anatomy Translation", description: "Translating features like 'drooping buds', 'succulent texture', and 'juicy interior' into letter strokes." },
-        { title: "Rhythmic Variation", description: "Creating rhythmic variation to avoid monotony, expressing depth and the layered anatomy of a fuchsia bloom." },
-        { title: "Continuous Flow", description: "Using continuous curves to mimic organic plant growth, with twisting branches topped with buds capturing the plant's cascading nature." }
-      ],
-      conceptNote: "VIVUS, meaning “alive,” is a typeface inspired by the fuchsia flower’s grace and vitality. Its soft yet structured forms reflect harmony between resilience and elegance, using vibrant hues of pink, purple, and green to express growth and transformation.",
-      outcome: "A unique typeface 'VIVUS' that captures the essence of the Fuchsia flower. The dual-petal structure hints at an open flower, while the simplest petal gives visual breathing space. The result is a design that is not just a font, but a reflection of organic life.",
-      gallery: [
-        "https://i.ibb.co/5hpzVw00/assignment-1-13.jpg",
-        "https://i.ibb.co/4whQzC5L/assignment-1-16.jpg",
-        "https://i.ibb.co/cSgvXp1d/assignment-1-15.jpg",
-        "https://i.ibb.co/HL2L9qbN/assignment-1-14.jpg"
-      ]
-    }
-  },
-  {
-    id: "1",
-    title: "Type & Emotion",
-    category: "UX Research",
-    date: "August, 2025",
-    description: "A research case study on cross-generational emotional responses to multilingual script variations across 47 participants, examining Marwari, Bengali, Telugu, and Tamil typography.",
-    thumbnailUrl: "/assets/behance_poster_mockup.jpg",
-    details: {
-      overview: "An empirical design research study exploring how script variations in multilingual design shape emotional responses across different age groups. Examining Marwari, Bengali, Telugu, and Tamil scripts across 47 participants, this study investigates generational interpretation, abstraction tolerance, and cultural resonance.",
-      problem: "There is a lack of empirical understanding of how script variations in multilingual design shape emotional responses across different age groups. Designers often make typographic choices without insight into how these resonate culturally or emotionally, which can lead to disengagement or miscommunication.",
-      process: "A quantitative and qualitative study utilizing 4 expressive typographic stimuli without imagery or icons, capturing participant emotional interpretations across 18–25, 26–45, and 46+ age cohorts through Likert and open-ended surveys.",
-      outcome: "Synthesizing multi-script integration, typographic emotion mapping, and textured typography into an architectural research poster.",
-      processSteps: [
-        { title: "01. Research Problem & Objectives", description: "Formulating core inquiries on how script variations emotionally impact diverse generational groups in multilingual contexts." },
-        { title: "02. Expressive Script Stimuli", description: "Crafting 4 typographic specimens conveying conceptual messages purely through script form in Marwari, Bengali, Telugu, and Tamil." },
-        { title: "03. Stratified Survey (N=47)", description: "Testing emotional interpretations across three age groups: 18–25 (Youth, 70.2%), 26–45 (Middle-aged, 14.9%), and 46+ (Older adults, 14.9%)." },
-        { title: "04. Generational & Thematic Analysis", description: "Mapping participant selections across emotional axes: introspection vs. neutrality, symbolism vs. surface, and emotional vs. technical descriptors." },
-        { title: "05. Inclusive Typography Poster Deliverable", description: "Synthesizing multi-script integration, typographic emotion mapping, and textured typography into an architectural research poster." }
-      ],
-      gallery: [
-        "/assets/behance_poster_mockup.jpg",
-        "/poster_preview.jpg",
-        "/assets/aistudio/WhatsApp_Image_2026-11-02_at_10.32.25__1__70aae0e4.jpeg",
-        "/assets/aistudio/WhatsApp_Image_2026-11-02_at_10.32.26__2__e6543967.jpeg",
-        "/assets/aistudio/WhatsApp_Image_2026-11-02_at_10.32.26__3__d983e353.jpeg",
-        "/assets/aistudio/WhatsApp_Image_2026-11-03_at_14.24.26_8cdef135.jpeg"
       ]
     }
   },

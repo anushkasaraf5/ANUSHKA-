@@ -17,23 +17,6 @@ import { ParallaxImage } from './ParallaxImage';
 import TypeAndEmotionCaseStudy from './TypeAndEmotionCaseStudy';
 import SystemsDesignCaseStudy from './SystemsDesignCaseStudy';
 
-const vivusFallbackImg = new URL(
-  '../src/assets/images/vivus_type_specimen_1793744720378.jpg',
-  import.meta.url
-).href;
-
-const matraFallbackImg = new URL(
-  '../src/assets/images/matra_marks_zine_1793744724290.jpg',
-  import.meta.url
-).href;
-
-const getProjectFallback = (projectId: string): string => {
-  if (projectId === '6') return vivusFallbackImg;
-  if (projectId === '2') return matraFallbackImg;
-  if (projectId === '3') return '/assets/projects/systems-design/journey_card_01.png';
-  return '/assets/anushka_poster_mockup.jpg';
-};
-
 // --- CONFIGURATION ---
 const IMAGE_ASPECT_RATIO = 'aspect-[4/3]';
 
@@ -54,30 +37,9 @@ const Projects: React.FC = () => {
     }
 
     return () => {
-      document.body.style.overflow = 'auto';
+       document.body.style.overflow = 'auto';
     };
   }, [selectedProject]);
-
-  // Allow Hero or other sections to directly open any case study by ID
-  useEffect(() => {
-    const handleOpenProjectEvent = (event: Event) => {
-      const customEvent = event as CustomEvent<string>;
-      const targetId = customEvent.detail;
-      const target = PROJECTS.find((p) => p.id === targetId);
-      if (target) {
-        setProjectHistory([]);
-        setSelectedProject(target);
-        setProjectMobileMenuOpen(false);
-        requestAnimationFrame(() => {
-          const overlay = document.getElementById('project-overlay');
-          if (overlay) overlay.scrollTop = 0;
-        });
-      }
-    };
-
-    window.addEventListener('open-project', handleOpenProjectEvent);
-    return () => window.removeEventListener('open-project', handleOpenProjectEvent);
-  }, []);
 
   const openProject = (project: Project, replace = false) => {
     const overlay = document.getElementById('project-overlay');
@@ -145,43 +107,32 @@ const Projects: React.FC = () => {
     return PROJECTS.filter(p => p.id !== selectedProject.id).slice(0, 3);
   }, [selectedProject]);
 
-  const featuredSystemsProject = useMemo(() => {
-    if (activeCategory === 'All' || activeCategory === 'UI/UX & Systems') {
-      return PROJECTS.find((p) => p.id === '3') || null;
-    }
-    return null;
-  }, [activeCategory]);
-
-  const gridProjects = useMemo(() => {
-    if (featuredSystemsProject) {
-      return filteredProjects.filter((p) => p.id !== featuredSystemsProject.id);
-    }
-    return filteredProjects;
-  }, [filteredProjects, featuredSystemsProject]);
-
   return (
-    <section id="work" className="py-24 md:py-32 bg-white dark:bg-stone-950 transition-colors duration-300 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between md:items-end gap-6 pb-8 mb-12 border-b border-stone-200 dark:border-stone-800">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-coral mb-2">
-              Selected Works · 2024–2026
-            </p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-editorial font-normal text-charcoal dark:text-white tracking-tight">
-              Case studies &amp; <span className="italic text-coral">specimens.</span>
-            </h2>
-          </div>
+    <section id="work" className="py-28 md:py-32 bg-white dark:bg-stone-950 transition-colors duration-300 relative overflow-hidden">
+      
+      {/* Ambient background glows */}
+      <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-lavender/20 dark:bg-lavender/10 rounded-full blur-[120px] pointer-events-none opacity-50 dark:opacity-60 animate-blob"></div>
+      <div className="absolute bottom-0 left-0 w-[550px] h-[550px] bg-coral/10 dark:bg-coral/10 rounded-full blur-[120px] pointer-events-none opacity-50 dark:opacity-60 animate-blob animation-delay-2000"></div>
 
-          <div className="flex flex-wrap gap-2">
+      <div className="container mx-auto px-6 relative z-10 max-w-7xl">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12">
+          <div className="animate-fadeIn">
+            <div className="flex items-center gap-2 mb-3">
+               <span className="h-px w-6 bg-neutral-gray dark:bg-stone-500"></span>
+               <h2 className="text-[13px] font-subheading font-medium tracking-widest uppercase text-coral dark:text-coral">Portfolio</h2>
+            </div>
+            <h3 className="text-3xl md:text-5xl font-heading font-normal text-charcoal dark:text-white tracking-tight">Selected Works</h3>
+          </div>
+          
+          <div className="flex flex-wrap gap-2.5 mt-6 md:mt-0 justify-end animate-fadeIn" style={{ animationDelay: '0.2s' }}>
             {categories.map((cat) => (
               <button
                 key={cat}
-                type="button"
                 onClick={() => setActiveCategory(cat)}
-                className={`px-4 py-2 rounded-lg font-clean text-xs font-medium transition-colors border cursor-pointer whitespace-nowrap shrink-0 ${
+                className={`px-5 py-2 rounded-full font-subheading text-[13px] font-medium tracking-wider transition-all duration-300 border cursor-pointer ${
                   activeCategory === cat
-                    ? 'bg-charcoal text-white border-charcoal dark:bg-cream dark:text-stone-950 dark:border-cream'
-                    : 'bg-[#FAF8F6] text-stone-600 border-stone-200 hover:border-charcoal hover:text-charcoal dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400 dark:hover:text-white'
+                    ? 'bg-charcoal text-white border-charcoal dark:bg-white dark:text-stone-900 dark:border-white shadow-md scale-105'
+                    : 'bg-cream text-neutral-gray border-stone-200 hover:border-charcoal hover:text-charcoal dark:border-stone-700 dark:bg-stone-900/50 dark:text-stone-400 dark:hover:text-white dark:hover:border-white hover:scale-105'
                 }`}
               >
                 {cat}
@@ -190,127 +141,56 @@ const Projects: React.FC = () => {
           </div>
         </div>
 
-        {/* Featured Systems Design Case Study Spotlight */}
-        {featuredSystemsProject && (
-          <div
-            onClick={() => openProject(featuredSystemsProject)}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                openProject(featuredSystemsProject);
-              }
-            }}
-            className="group mb-12 rounded-2xl bg-[#FAF8F6] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:border-coral/70 dark:hover:border-coral/70 transition-all overflow-hidden cursor-pointer grid grid-cols-1 lg:grid-cols-12"
-          >
-            <div className="lg:col-span-6 p-7 sm:p-10 flex flex-col justify-between gap-8">
-              <div className="space-y-4">
-                <div className="flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400">
-                  <span className="text-coral font-medium">Featured Systems Architecture</span>
-                  <span aria-hidden="true">·</span>
-                  <span>{featuredSystemsProject.date}</span>
-                </div>
-
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-editorial font-normal text-charcoal dark:text-white leading-[1.12] tracking-tight group-hover:text-coral transition-colors">
-                  {featuredSystemsProject.title}
-                </h3>
-
-                <p className="font-clean text-sm sm:text-base text-stone-600 dark:text-stone-300 leading-relaxed">
-                  {featuredSystemsProject.description}
-                </p>
-
-                <div className="pt-2 grid grid-cols-2 gap-3 text-xs font-clean text-stone-600 dark:text-stone-400">
-                  <div className="p-3 rounded-xl bg-white dark:bg-stone-950 border border-stone-200/80 dark:border-stone-800">
-                    <span className="block font-mono text-[11px] uppercase tracking-wider text-coral mb-0.5">
-                      Interactive Maps
-                    </span>
-                    Opportunity plot, Hub-and-Spoke ecosystem &amp; Power × Interest matrix
-                  </div>
-                  <div className="p-3 rounded-xl bg-white dark:bg-stone-950 border border-stone-200/80 dark:border-stone-800">
-                    <span className="block font-mono text-[11px] uppercase tracking-wider text-coral mb-0.5">
-                      System Flowcharts
-                    </span>
-                    7-stage swimlane journey, 9-team database pipeline &amp; live card UI
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-4 border-t border-stone-200/80 dark:border-stone-800">
-                <span className="inline-flex items-center gap-2 font-clean text-sm font-medium text-charcoal dark:text-white group-hover:text-coral transition-colors">
-                  <span>Open Interactive Case Study</span>
-                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </span>
-                <span className="font-mono text-xs text-stone-400">6 Interactive SVG Diagrams</span>
-              </div>
-            </div>
-
-            <div className="lg:col-span-6 bg-[#F3EFEA] dark:bg-stone-950 border-t lg:border-t-0 lg:border-l border-stone-200 dark:border-stone-800 p-5 sm:p-7 flex flex-col justify-center">
-              <div className="rounded-xl overflow-hidden border border-stone-200/90 dark:border-stone-800 bg-white dark:bg-stone-900 shadow-xs aspect-[16/10]">
-                <img
-                  src="/assets/projects/systems-design/journey_card_07.png"
-                  alt="Proposed Event Journey Card system architecture flowchart"
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-103"
-                />
-              </div>
-              <div className="mt-3 flex items-center justify-between font-mono text-[11px] text-stone-500 dark:text-stone-400 px-1">
-                <span>Centralized 9-Team Event Database → Personalized Attendee Card</span>
-                <span>UID · 2026</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {gridProjects.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-            {gridProjects.map((project, index) => (
-              <ProjectCard
-                key={`${activeCategory}-${project.id}`}
-                project={project}
-                onClick={() => openProject(project)}
-                index={index}
-              />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+          {filteredProjects.map((project, index) => (
+            <ProjectCard 
+              key={`${activeCategory}-${project.id}`} 
+              project={project} 
+              onClick={() => openProject(project)}
+              index={index}
+            />
+          ))}
+        </div>
       </div>
 
       {/* BESPOKE PROJECT DETAIL OVERLAY */}
       {selectedProject && (
-        <div id="project-overlay" className="fixed inset-0 z-[60] bg-[#FAF8F6] dark:bg-[#0C0B0A] overflow-y-auto animate-fadeIn custom-scrollbar">
-          {/* Clean Editorial Case Study Top Bar */}
-          <div className="sticky top-0 left-0 right-0 z-50 bg-[#FAF8F6]/92 dark:bg-[#0C0B0A]/92 backdrop-blur-md border-b border-stone-200/90 dark:border-stone-800/90">
-            <nav
-              aria-label="Project navigation"
-              className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 py-3.5 flex items-center justify-between gap-4"
-            >
-              {/* Left: Brand + Back */}
-              <div className="flex items-center gap-3">
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    closeProject();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="font-editorial text-lg tracking-tight text-charcoal dark:text-cream hover:opacity-80 whitespace-nowrap shrink-0"
-                  title="Anushka Saraf Portfolio"
-                >
-                  Anushka Saraf<span className="text-coral">.</span>
-                </a>
+        <div id="project-overlay" className="fixed inset-0 z-[60] bg-[#fafafa] dark:bg-stone-950 overflow-y-auto animate-fadeIn custom-scrollbar">
+            
+            {/* Project Navigation Bar (Identical style to main navbar + Back & Close options) */}
+            <div className="sticky top-0 left-0 right-0 z-50 pt-3 sm:pt-5 pb-2 px-3 sm:px-6 flex justify-center pointer-events-none bg-gradient-to-b from-[#fafafa] via-[#fafafa]/90 to-transparent dark:from-stone-950 dark:via-stone-950/90 dark:to-transparent">
+              <nav 
+                aria-label="Project navigation"
+                className="pointer-events-auto relative px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-full flex items-center justify-between transition-all duration-300 w-full sm:w-[94%] md:w-[85%] lg:w-[75%] max-w-5xl bg-white/90 dark:bg-stone-900/90 backdrop-blur-md shadow-lg border border-stone-200/80 dark:border-stone-800"
+              >
+                
+                {/* Left: Brand AS. + Back Option */}
+                <div className="flex items-center gap-2 sm:gap-3 z-10">
+                  <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      closeProject();
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="text-base sm:text-lg font-heading font-normal tracking-tight uppercase transition-colors text-charcoal dark:text-cream hover:opacity-80"
+                    title="Anushka Saraf Portfolio"
+                  >
+                    AS<span className="text-coral">.</span>
+                  </a>
 
-                <div className="h-4 w-px bg-stone-300 dark:bg-stone-700" />
+                  <div className="h-4 w-px bg-stone-300 dark:bg-stone-700"></div>
 
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className="inline-flex items-center gap-1.5 font-clean text-xs sm:text-sm font-medium text-stone-600 hover:text-coral dark:text-stone-300 dark:hover:text-coral transition-colors group cursor-pointer whitespace-nowrap shrink-0"
-                  title={projectHistory.length > 0 ? 'Back to previous project' : 'Back to portfolio'}
-                >
-                  <ArrowLeft size={15} className="group-hover:-translate-x-0.5 transition-transform" />
-                  <span>All Works</span>
-                </button>
-              </div>
+                  {/* BACK OPTION */}
+                  <button 
+                    onClick={handleBack}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-subheading text-xs sm:text-sm font-medium text-neutral-gray hover:text-coral hover:bg-cream dark:text-stone-300 dark:hover:text-coral dark:hover:bg-stone-800 transition-colors group cursor-pointer"
+                    title={projectHistory.length > 0 ? "Back to previous project" : "Back to portfolio"}
+                  >
+                    <ArrowLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+                    <span>Back</span>
+                  </button>
+                </div>
 
                 {/* Center: Desktop Nav Links (Identical to Main Navbar with Work active) */}
                 <div className="hidden md:flex items-center space-x-1">
@@ -702,11 +582,6 @@ const VivusTypefaceCaseStudy: React.FC<{ project: Project; setViewingImage: (url
                 <img 
                   src={project.details.gallery[0]} 
                   alt="VIVUS Type Specimen Spread on Laptop" 
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    const target = e.currentTarget;
-                    if (target.src !== vivusFallbackImg) target.src = vivusFallbackImg;
-                  }}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center">
@@ -751,7 +626,6 @@ const VivusTypefaceCaseStudy: React.FC<{ project: Project; setViewingImage: (url
                   <div className="relative rounded-xl overflow-hidden aspect-[4/3] bg-stone-100 dark:bg-stone-950">
                     <ParallaxImage 
                       src={imgUrl} 
-                      fallbackSrc={vivusFallbackImg}
                       alt={`Editorial Spread ${idx + 2}`} 
                       speed={speeds[idx % speeds.length]}
                       containerClassName="w-full h-full"
@@ -930,11 +804,6 @@ const MatraMarksCaseStudy: React.FC<{ project: Project; setViewingImage: (url: s
                   <img 
                     src={imgUrl} 
                     alt={`Vernacular Street Artifact ${idx + 1}`} 
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      if (target.src !== matraFallbackImg) target.src = matraFallbackImg;
-                    }}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center">
@@ -1008,17 +877,7 @@ const DefaultCaseStudy: React.FC<{ project: Project; setViewingImage: (url: stri
         onClick={() => setViewingImage(project.thumbnailUrl)}
         className="cursor-zoom-in rounded-2xl overflow-hidden shadow-xl aspect-[16/9] bg-stone-900"
       >
-        <img
-          src={project.thumbnailUrl}
-          alt={project.title}
-          referrerPolicy="no-referrer"
-          onError={(e) => {
-            const target = e.currentTarget;
-            const fallback = getProjectFallback(project.id);
-            if (target.src !== fallback) target.src = fallback;
-          }}
-          className="w-full h-full object-cover"
-        />
+        <img src={project.thumbnailUrl} alt={project.title} className="w-full h-full object-cover" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1195,12 +1054,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, index }) =>
             <img 
               src={project.thumbnailUrl} 
               alt={project.title} 
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                const target = e.currentTarget;
-                const fallback = getProjectFallback(project.id);
-                if (target.src !== fallback) target.src = fallback;
-              }}
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108 will-change-transform"
             />
           </div>

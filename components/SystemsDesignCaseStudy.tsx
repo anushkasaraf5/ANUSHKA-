@@ -1,25 +1,14 @@
 import React, { useState } from 'react';
 import { Project } from '../types';
-import {
-  ZoomIn,
-  ArrowRight,
-  CheckCircle2,
-  QrCode,
-  Bell,
-  FileText,
-  Compass,
-  HelpCircle,
-  ShieldCheck
+import { 
+  ZoomIn, ArrowRight, CheckCircle2, AlertTriangle, Layers,
+  Users, Database, Smartphone, Bell, Clock, RefreshCw,
+  ExternalLink, Sparkles, ChevronRight, FileText, Share2,
+  Check, Eye, ShieldCheck, MapPin, Calendar, QrCode,
+  Building2, School, Radio, Compass, GitBranch, AlertCircle,
+  HelpCircle, BarChart3, UserCheck, MessageSquare, ArrowDown
 } from 'lucide-react';
 import { RevealOnScroll } from './RevealOnScroll';
-import {
-  StakeholderEcosystemMap,
-  OpportunityLandscapeChart,
-  OldSystemJourneyMap,
-  LivingCardLoopDiagram,
-  SystemArchitectureFlowchart,
-  AnnotatedEventJourneyCard
-} from './SystemsDesignDiagrams';
 
 interface SystemsDesignProps {
   project: Project;
@@ -29,942 +18,1940 @@ interface SystemsDesignProps {
 
 export const SystemsDesignCaseStudy: React.FC<SystemsDesignProps> = ({
   project,
-  setViewingImage
+  setViewingImage,
+  onNavigateProject
 }) => {
-  const [compareTab, setCompareTab] = useState<'both' | 'old' | 'new'>('both');
+  // Step 6: Interactive Cartography Map Selection
+  const [activeMapTab, setActiveMapTab] = useState<number>(0);
 
-  const npsMentions = [
-    { label: 'Missed sudden venue or timing shift', pct: 84 },
-    { label: 'Silence right after submitting Google Form', pct: 76 },
-    { label: 'Conflicting details across WhatsApp groups', pct: 68 },
-    { label: 'Rushed posters from 72h approval delays', pct: 61 },
-    { label: 'Chasing organizers weeks later for certificates', pct: 54 }
-  ];
+  // Step 8: Interactive Attendee Journey Phase Selection
+  const [activeJourneyPhase, setActiveJourneyPhase] = useState<number>(0);
 
-  const frustrationScores = [
-    { label: 'Knowing if registration actually succeeded', score: 8.8 },
-    { label: 'Catching last-minute hall relocations', score: 8.6 },
-    { label: 'Receiving participation certificates on time', score: 8.2 },
-    { label: 'Waiting on administrative room sanctions', score: 7.9 },
-    { label: 'Manual spreadsheet check-in queues', score: 7.2 },
-    { label: 'Reaching the right coordinator for help', score: 6.8 }
-  ];
+  // Step 8: Live Card Simulation State (Pre-Event, Event Day, Post-Event)
+  const [cardSimulationState, setCardSimulationState] = useState<'pre' | 'live' | 'post'>('live');
 
-  const problemThemes = [
+  // Step 6: Maps Data
+  const cartographyMaps = [
     {
-      num: '01',
-      title: 'Dependency on specific people',
-      desc: 'Planning runs on personal relationships and mental notes rather than written workflows. When one faculty mentor or core student lead is unreachable, every sub-team stalls.'
+      id: "ecosystem",
+      number: "01",
+      title: "Campus Academic Event Ecosystem",
+      badge: "Macro System Blueprint",
+      description: "Maps institutional relationships and transmission paths across 5 campus tiers.",
+      insight: "Attendees sit at the outermost boundary of the organization, receiving information diluted across 4 separate human intermediaries."
     },
     {
-      num: '02',
-      title: 'Important details get scrambled',
-      desc: 'Updates pass through four human layers—from core leads to sub-teams, class reps, and students—losing accuracy like a game of telephone across noisy WhatsApp forwards.'
+      id: "stakeholders",
+      number: "02",
+      title: "Stakeholder Power vs. Interest Grid",
+      badge: "Governance Analysis",
+      description: "Evaluates institutional actors to diagnose systemic decision bottlenecks.",
+      insight: "High Power / Low Daily Interest actors (Administration) delay room approvals, paralyzing High Interest / Low Power executors (Student Sub-teams)."
     },
     {
-      num: '03',
-      title: 'Delayed decisions, rushed announcements',
-      desc: 'Promotion cannot begin until room bookings and budgets are physically stamped by administration, compressing awareness windows to bare-minimum teasers.'
+      id: "lifecycle",
+      number: "03",
+      title: "7-Phase Event Information Flow",
+      badge: "Service Lifecycle",
+      description: "Chronological mapping from initial faculty ideation through to certification.",
+      insight: "Information collapses most acutely at Phase 5 (post-registration communication vacuum) and Phase 7 (delayed certificate fulfillment)."
     },
     {
-      num: '04',
-      title: 'Communication drops off after registration',
-      desc: 'The moment a student submits a Google Form, communication goes dark—no entry pass, no live schedule link, and weeks of chasing organizers for certificates.'
+      id: "taxonomy",
+      number: "04",
+      title: "Event Information Architecture Taxonomy",
+      badge: "Information Hierarchy",
+      description: "Deconstructs campus event data into Static, Dynamic, and Actionable modules.",
+      insight: "Traditional posters conflate static and dynamic details, rendering printed communications immediately obsolete whenever logistics shift."
+    },
+    {
+      id: "dependencies",
+      number: "05",
+      title: "Inter-Team Critical Path Dependencies",
+      badge: "Workflow Network",
+      description: "Cross-functional analysis demonstrating sequential blocking between sub-teams.",
+      insight: "PR and Promotion cannot publish official collateral until physical room sanctions are stamped by Administration, shrinking attendee awareness windows."
+    },
+    {
+      id: "opportunities",
+      number: "06",
+      title: "Pain Point & Opportunity Matrix",
+      badge: "Intervention Map",
+      description: "Translates observed institutional breakdowns into actionable design interventions.",
+      insight: "Establishing a single, authoritative attendee web card solves upstream coordination friction without requiring sub-teams to surrender operational autonomy."
     }
   ];
 
-  const archetypes = [
+  // Step 8: Attendee Journey Phases
+  const journeyPhases = [
     {
-      name: 'The first-year explorer',
-      desc: 'New to campus blocks and symposiums. Needs clear hall directions, dress/laptop rules, and reassurance that their sign-up worked.'
-    },
-    {
-      name: 'The visiting delegate',
-      desc: 'Travels from another college without internal WhatsApp groups or campus Wi-Fi. Needs one link that works immediately in any mobile browser.'
-    },
-    {
-      name: 'The stretched coordinator',
-      desc: 'Juggles lectures while running a volunteer sub-team. Needs to update a room or speaker once without answering 100 repetitive calls.'
-    },
-    {
-      name: 'The proof-seeker',
-      desc: 'Attends workshops to build academic credits and portfolios. Needs verified attendance and an instant, shareable PDF certificate.'
-    }
-  ];
-
-  const survivalScenarios = [
-    'Auditorium relocated 30 minutes before the opening keynote',
-    'Multi-track symposium spanning three campus blocks simultaneously',
-    'External student arriving at the gate with slow mobile data and no app',
-    'Registration opened before final seminar hall sanction is stamped',
-    'Mid-week volunteer handover between student sub-team leads',
-    'Post-event certificate verification for 300+ checked-in attendees'
-  ];
-
-  const singleJobCards = [
-    {
-      question: 'Did my registration go through?',
-      answer: 'Personal greeting + verified status header ("Hi Tanya · You are registered") appears the second the link opens.',
-      metric: 'Status · UID #DS26-1047',
-      icon: CheckCircle2
-    },
-    {
-      question: 'How do I get past the auditorium gate?',
-      answer: 'High-contrast QR Event Entry Pass sits above the fold for a 2-second volunteer scan instead of paper lists.',
-      metric: '< 2 sec gate check-in',
-      icon: QrCode
-    },
-    {
-      question: 'Wait, did the venue or date change?',
-      answer: 'Dedicated Latest Updates diff cards explicitly pair Old vs. New halls and timings so rumors never take over.',
-      metric: 'Old → New diff clarity',
-      icon: Bell
-    },
-    {
-      question: 'What do I need to carry tomorrow?',
-      answer: 'Before-event checklist spells out ID cards, laptop prerequisites, and gate instructions in plain language.',
-      metric: 'Pre-event readiness',
-      icon: Compass
-    },
-    {
-      question: 'Where is my participation certificate?',
-      answer: 'Gate QR scan automatically locks verified attendance and unlocks a 1-tap PDF certificate on the same link.',
-      metric: 'Zero manual chasing',
+      phase: "01. REGISTER",
+      role: "Initial Onboarding",
+      action: "Submit Google Form & Confirm",
+      details: [
+        "Student fills standard institutional registration form",
+        "Instant confirmation triggers automated card creation in central database",
+        "Unique personal Event Journey Card link dispatched via WhatsApp and SMS"
+      ],
+      state: "Ticket Provisioned",
       icon: FileText
     },
     {
-      question: 'Who do I contact if I am stuck?',
-      answer: 'Named support email and helpline sit quietly at the foot of the card, one tap away when edge cases arise.',
-      metric: 'Direct escalation path',
-      icon: HelpCircle
+      phase: "02. GET YOUR CARD",
+      role: "First Touchpoint",
+      action: "Open Personal Link & Inspect",
+      details: [
+        "Attendee taps single permanent URL — zero app store download required",
+        "Personalized greeting with verified registration badge & unique barcode",
+        "Core schedule, venue location, and check-in pass immediately visible"
+      ],
+      state: "Active Web Card",
+      icon: Smartphone
+    },
+    {
+      phase: "03. BEFORE EVENT",
+      role: "Preparation Window",
+      action: "Explore Details & Guidance",
+      details: [
+        "Live venue directions, parking maps, and campus block navigation",
+        "Speaker bios, session tracks, and required workshop prerequisites",
+        "Checklist of what to bring and dress code guidelines"
+      ],
+      state: "Pre-Event Ready",
+      icon: Compass
+    },
+    {
+      phase: "04. EVENT DAY",
+      role: "On-Ground Execution",
+      action: "Turnstile Check-In & Live Updates",
+      details: [
+        "Volunteer scans turnstile QR barcode in under 2 seconds",
+        "Live schedule tracking highlights active keynote session",
+        "Instant coral alert banners broadcast emergency room changes"
+      ],
+      state: "Live Synchronized",
+      icon: QrCode
+    },
+    {
+      phase: "05. POST EVENT",
+      role: "Fulfillment Loop",
+      action: "Attendance Status & Certificate",
+      details: [
+        "Verified check-in timestamp marks attendance status automatically",
+        "One-click downloadable PDF certificate issued immediately without delay",
+        "Built-in post-event feedback form closes the service loop"
+      ],
+      state: "Service Fulfilled",
+      icon: ShieldCheck
     }
   ];
 
-  const archivalSlides = [
-    { title: 'Project Identity', src: '/assets/projects/systems-design/journey_card_01.png' },
-    { title: 'Stakeholder Map', src: '/assets/projects/systems-design/systems_slide_14.png' },
-    { title: 'Ecosystem Map', src: '/assets/projects/systems-design/systems_slide_15.png' },
-    { title: '7-Phase Flow Map', src: '/assets/projects/systems-design/systems_slide_16.png' },
-    { title: 'Information Flow', src: '/assets/projects/systems-design/systems_slide_17.png' },
-    { title: 'Information Architecture', src: '/assets/projects/systems-design/systems_slide_18.png' },
-    { title: 'Internal Team Map', src: '/assets/projects/systems-design/systems_slide_20.png' },
-    { title: 'Dependency Map', src: '/assets/projects/systems-design/systems_slide_21.png' },
-    { title: 'Updated Journey Flow', src: '/assets/projects/systems-design/journey_card_05.png' },
-    { title: 'Card UI Architecture', src: '/assets/projects/systems-design/journey_card_06.png' },
-    { title: 'Proposed System', src: '/assets/projects/systems-design/journey_card_07.png' },
-    { title: 'Resolution Matrix', src: '/assets/projects/systems-design/journey_card_08.png' }
-  ];
-
   return (
-    <article className="max-w-6xl mx-auto space-y-20 sm:space-y-28 pb-16 selection:bg-coral selection:text-white">
-      {/* =================================================================== */}
-      {/* 01. EDITORIAL HERO & METADATA STRIP                                 */}
-      {/* =================================================================== */}
+    <article className="max-w-5xl mx-auto space-y-16 sm:space-y-24 selection:bg-lavender selection:text-white pb-16">
+      
+      {/* ============================================================= */}
+      {/* HERO SECTION: IDENTITY & EDITORIAL PREMISE                    */}
+      {/* ============================================================= */}
       <RevealOnScroll direction="up">
-        <header className="space-y-8 pt-2">
-          <div className="max-w-4xl space-y-4">
-            <div className="flex flex-wrap items-center gap-2.5 text-[13px] font-subheading text-stone-500 dark:text-stone-400">
-              <span className="text-coral font-semibold">Systems & Service Design</span>
-              <span aria-hidden="true">·</span>
-              <span>Academic Event Operations</span>
-              <span aria-hidden="true">·</span>
-              <span>{project.date}</span>
+        <header className="space-y-8 pt-4">
+          
+          {/* Editorial Kicker & Scope Metadata */}
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-200 dark:border-stone-800 pb-4 text-xs font-subheading text-stone-600 dark:text-stone-400">
+            <div className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-lavender animate-pulse" />
+              <span className="font-heading tracking-wider text-charcoal dark:text-white text-sm">
+                SYSTEMS & SERVICE DESIGN CASE STUDY
+              </span>
             </div>
+            <div className="flex items-center gap-2.5 text-[11px]">
+              <span>Academic Event Operations</span>
+              <span>/</span>
+              <span>Attendee-Centric Service Architecture</span>
+              <span>/</span>
+              <span>By Anushka Saraf</span>
+            </div>
+          </div>
 
-            <h1 className="text-3xl sm:text-5xl md:text-[56px] font-heading font-normal text-charcoal dark:text-white leading-[1.08] tracking-tight text-balance">
-              The decisions behind fixing communication across campus academic events
+          {/* Project Title & Narrative Introduction */}
+          <div className="space-y-4 max-w-4xl">
+            <span className="text-xs font-subheading uppercase tracking-widest text-coral font-bold block">
+              Campus Communication Architecture
+            </span>
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-heading font-normal text-charcoal dark:text-white leading-[1.08] tracking-tight">
+              Event Journey Card: Re-engineering Academic Service Systems
             </h1>
-
-            <p className="text-base sm:text-lg font-body text-stone-600 dark:text-stone-300 leading-relaxed max-w-3xl">
-              Campus symposiums, workshops, and guest lectures look effortless on stage, yet rely on fragile backstage relays across administration, faculty, nine student sub-teams, and hundreds of attendees. I mapped where critical updates broke down and designed the{' '}
-              <strong className="text-charcoal dark:text-white font-semibold">
-                Event Journey Card
-              </strong>
-              —one permanent, app-free web link that keeps every attendee aligned from sign-up to certificate download.
+            <p className="text-base sm:text-lg font-subheading text-stone-600 dark:text-stone-300 leading-relaxed max-w-3xl">
+              Campus academic events appear simple from the outside, but disguise an intricate web of backstage dependencies across university administration, faculty mentors, volunteer student sub-teams, and hundreds of attendees. When communication breaks down, attendees face missed announcements, venue confusion, and delayed certificates. This systems design case study investigates the structural causes of communication failure and designs the <strong className="text-charcoal dark:text-white font-medium">Event Journey Card</strong> — a single, continuously updated web link that bridges backstage management with an intuitive attendee experience.
             </p>
           </div>
 
-          {/* Clean 4-Column Metadata Row (Unboxed, Hairline Grid) */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 py-5 border-y border-stone-200 dark:border-stone-800">
-            <div>
-              <h2 className="text-[13px] font-subheading text-stone-400 dark:text-stone-500">
-                Role
-              </h2>
-              <p className="text-sm sm:text-base font-subheading font-semibold text-charcoal dark:text-white mt-0.5">
-                Systems & UX Designer
-              </p>
+          {/* Authentic Cover Presentation Banner */}
+          <div className="space-y-3">
+            <div 
+              onClick={() => setViewingImage("/assets/projects/systems-design/journey_card_01.png")}
+              className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-3xl overflow-hidden bg-stone-100 dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xl cursor-zoom-in group flex items-center justify-center p-3 sm:p-6"
+            >
+              <img 
+                src="/assets/projects/systems-design/journey_card_01.png" 
+                alt="Event Journey Card Project Identity Slide" 
+                className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-102"
+              />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center pointer-events-none">
+                <span className="opacity-0 group-hover:opacity-100 transition-opacity px-4 py-2 rounded-full bg-white/95 dark:bg-stone-900/95 backdrop-blur text-xs font-subheading font-medium text-charcoal dark:text-white shadow-xl flex items-center gap-1.5">
+                  <ZoomIn size={14} className="text-lavender" /> Inspect High-Resolution Title Slide
+                </span>
+              </div>
             </div>
-            <div>
-              <h2 className="text-[13px] font-subheading text-stone-400 dark:text-stone-500">
-                Research Scope
-              </h2>
-              <p className="text-sm sm:text-base font-subheading font-semibold text-charcoal dark:text-white mt-0.5 tabular-nums">
-                47 Interviews · 3 Events
-              </p>
-            </div>
-            <div>
-              <h2 className="text-[13px] font-subheading text-stone-400 dark:text-stone-500">
-                System Span
-              </h2>
-              <p className="text-sm sm:text-base font-subheading font-semibold text-charcoal dark:text-white mt-0.5 tabular-nums">
-                Admin, Faculty & 9 Teams
-              </p>
-            </div>
-            <div>
-              <h2 className="text-[13px] font-subheading text-stone-400 dark:text-stone-500">
-                Platform
-              </h2>
-              <p className="text-sm sm:text-base font-subheading font-semibold text-charcoal dark:text-white mt-0.5">
-                Mobile Web Card & DB
-              </p>
+            <div className="flex items-center justify-between text-[11px] font-subheading text-stone-500 px-1">
+              <span>Authentic Project Title Identity · Torn Paper & Hand-Drawn Visual Motif</span>
+              <span>Click image to inspect in full resolution</span>
             </div>
           </div>
 
-          {/* Hero Showcase Frame */}
-          <div
-            onClick={() => setViewingImage('/assets/projects/systems-design/journey_card_01.png')}
-            className="group relative rounded-3xl overflow-hidden bg-[#F7F5F2] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 p-3 sm:p-6 cursor-zoom-in shadow-sm"
-          >
-            <div className="aspect-[16/9] sm:aspect-[21/9] rounded-2xl overflow-hidden bg-white dark:bg-stone-950 flex items-center justify-center">
-              <img
-                src="/assets/projects/systems-design/journey_card_01.png"
-                alt="Event Journey Card systems design cover presentation"
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.015]"
-              />
-            </div>
-            <div className="mt-3 px-1 flex items-center justify-between text-[13px] font-subheading text-stone-500 dark:text-stone-400">
-              <span>Event Journey Card · Systems & Service Architecture Case Study</span>
-              <span className="inline-flex items-center gap-1.5 text-charcoal dark:text-stone-200 font-medium group-hover:text-coral transition-colors">
-                <ZoomIn size={14} /> Click to inspect full resolution
-              </span>
+          {/* Quick Step Navigation Index */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-stone-100/70 dark:bg-stone-900/70 border border-stone-200 dark:border-stone-800">
+            <span className="text-[10px] font-heading text-stone-400 dark:text-stone-500 uppercase tracking-widest block mb-2.5">
+              Case Study Roadmap · 8 Systems Steps
+            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-subheading">
+              <a href="#step-1" className="p-2 rounded-xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-750 hover:border-lavender text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+                <span className="font-heading text-lavender font-bold">01</span> Research
+              </a>
+              <a href="#step-2" className="p-2 rounded-xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-750 hover:border-coral text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+                <span className="font-heading text-coral font-bold">02</span> Problem Statement
+              </a>
+              <a href="#step-3" className="p-2 rounded-xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-750 hover:border-lavender text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+                <span className="font-heading text-lavender font-bold">03</span> Root Cause
+              </a>
+              <a href="#step-4" className="p-2 rounded-xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-750 hover:border-coral text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+                <span className="font-heading text-coral font-bold">04</span> Success Metrics
+              </a>
+              <a href="#step-5" className="p-2 rounded-xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-750 hover:border-lavender text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+                <span className="font-heading text-lavender font-bold">05</span> Proposed Intervention
+              </a>
+              <a href="#step-6" className="p-2 rounded-xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-750 hover:border-coral text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+                <span className="font-heading text-coral font-bold">06</span> Understanding System
+              </a>
+              <a href="#step-7" className="p-2 rounded-xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-750 hover:border-lavender text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+                <span className="font-heading text-lavender font-bold">07</span> Found Problem
+              </a>
+              <a href="#step-8" className="p-2 rounded-xl bg-white dark:bg-stone-850 border border-stone-200 dark:border-stone-750 hover:border-coral text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
+                <span className="font-heading text-coral font-bold">08</span> The Changes
+              </a>
             </div>
           </div>
+
         </header>
       </RevealOnScroll>
 
-      {/* =================================================================== */}
-      {/* 02. THE PROBLEM: FOUR RECURRING SYSTEM BREAKDOWNS                   */}
-      {/* =================================================================== */}
+      {/* ============================================================= */}
+      {/* STEP 1: RESEARCH                                              */}
+      {/* ============================================================= */}
       <RevealOnScroll direction="up">
-        <section className="space-y-10">
-          <div className="max-w-3xl space-y-3">
-            <p className="text-[13px] font-subheading font-semibold text-coral">The problem</p>
-            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight text-balance">
-              Teams worked around the clock, yet critical details kept disappearing
+        <section id="step-1" className="space-y-8 scroll-mt-20">
+          
+          <div className="space-y-2 border-l-2 border-lavender pl-4">
+            <span className="text-xs font-subheading uppercase tracking-widest text-lavender font-bold block">
+              Step 1 of 8 · Empirical Systems Investigation
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight">
+              Step 1: Research
             </h2>
-            <p className="text-base font-body text-stone-600 dark:text-stone-300 leading-relaxed">
-              Campus events did not fail from lack of effort. They failed because event information lived across individual heads, disconnected chat threads, and static posters{' '}
-              <span className="text-charcoal dark:text-white font-medium">
-                without a single system for ownership, updating, and distribution
-              </span>
-              . Auditing 120+ communication logs surfaced four structural failure patterns:
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base max-w-3xl leading-relaxed font-subheading">
+              A comprehensive inquiry into campus academic events (symposiums, design conferences, multi-day technical workshops, and guest lectures) to trace communication hand-offs across institutional boundaries.
             </p>
           </div>
 
-          {/* 4 Numbered Problem Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {problemThemes.map((item) => (
-              <div
-                key={item.num}
-                className="p-6 sm:p-7 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3"
-              >
-                <span className="text-sm font-mono font-semibold text-coral block tabular-nums">
-                  {item.num}
-                </span>
-                <h3 className="text-xl font-heading font-normal text-charcoal dark:text-white">
-                  {item.title}
-                </h3>
-                <p className="text-sm font-body text-stone-600 dark:text-stone-400 leading-relaxed">
-                  {item.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-      </RevealOnScroll>
-
-      {/* =================================================================== */}
-      {/* 03. WHAT THE DATA TOLD US (QUANTITATIVE BENTO GRID)                 */}
-      {/* =================================================================== */}
-      <RevealOnScroll direction="up">
-        <section className="space-y-8">
-          <div className="max-w-3xl space-y-2.5">
-            <p className="text-[13px] font-subheading font-semibold text-coral">
-              What the data told us
-            </p>
-            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight text-balance">
-              Measuring where information dropped across 47 interviews
-            </h2>
-            <p className="text-base font-body text-stone-600 dark:text-stone-300 leading-relaxed">
-              Qualitative interviews explained why teams felt stretched. Tracing 120+ message logs and attendee survey responses showed how big each breakdown really was.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-            {/* Chart 1: % of Interview Mentions */}
-            <div className="lg:col-span-5 p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col justify-between space-y-6">
-              <div>
-                <h3 className="text-lg font-heading text-charcoal dark:text-white">
-                  Where did attendees get stuck?
-                </h3>
-                <p className="text-[13px] font-subheading text-stone-500">
-                  % of surveyed attendees & volunteers reporting issue
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                {npsMentions.map((row) => (
-                  <div key={row.label} className="space-y-1.5">
-                    <div className="flex items-baseline justify-between gap-2 text-[13px]">
-                      <span className="font-body text-charcoal dark:text-stone-200">
-                        {row.label}
-                      </span>
-                      <span className="font-mono font-semibold text-coral tabular-nums">
-                        {row.pct}%
-                      </span>
-                    </div>
-                    <div className="h-2 w-full rounded-full bg-stone-100 dark:bg-stone-800 overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-coral"
-                        style={{ width: `${row.pct}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Chart 2: Channel Fragmentation Ring */}
-            <div className="lg:col-span-3 p-6 rounded-3xl bg-[#F7F5F2] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col justify-between space-y-5">
-              <div>
-                <h3 className="text-lg font-heading text-charcoal dark:text-white">
-                  Where updates lived
-                </h3>
-                <p className="text-[13px] font-subheading text-stone-500">
-                  Share of 120+ traced logs
-                </p>
-              </div>
-
-              <div className="flex justify-center py-1">
-                <svg width="156" height="156" viewBox="0 0 160 160">
-                  <circle cx="80" cy="80" r="58" fill="none" stroke="#E7E2DC" strokeWidth="18" />
-                  {/* 42% WhatsApp */}
-                  <circle
-                    cx="80"
-                    cy="80"
-                    r="58"
-                    fill="none"
-                    stroke="#FF3366"
-                    strokeWidth="18"
-                    strokeDasharray="153 365"
-                    transform="rotate(-90 80 80)"
-                  />
-                  {/* 24% Static Posters */}
-                  <circle
-                    cx="80"
-                    cy="80"
-                    r="58"
-                    fill="none"
-                    stroke="#8B7CFF"
-                    strokeWidth="18"
-                    strokeDasharray="87 365"
-                    strokeDashoffset="-156"
-                    transform="rotate(-90 80 80)"
-                  />
-                  {/* 19% Verbal */}
-                  <circle
-                    cx="80"
-                    cy="80"
-                    r="58"
-                    fill="none"
-                    stroke="#F59E0B"
-                    strokeWidth="18"
-                    strokeDasharray="69 365"
-                    strokeDashoffset="-246"
-                    transform="rotate(-90 80 80)"
-                  />
-                  <text
-                    x="80"
-                    y="76"
-                    textAnchor="middle"
-                    className="fill-charcoal dark:fill-white text-xl font-bold"
-                    fontFamily="var(--font-main-heading)"
-                  >
-                    42%
-                  </text>
-                  <text
-                    x="80"
-                    y="95"
-                    textAnchor="middle"
-                    className="fill-stone-500 text-[11px]"
-                    fontFamily="var(--font-sub-heading)"
-                  >
-                    Chat forwards
-                  </text>
-                </svg>
-              </div>
-
-              <div className="space-y-1.5 text-[13px] font-subheading tabular-nums">
-                <div className="flex justify-between">
-                  <span className="text-stone-600 dark:text-stone-300">WhatsApp forwards</span>
-                  <span className="font-semibold text-coral">42%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-stone-600 dark:text-stone-300">Static posters</span>
-                  <span className="font-semibold text-lavender">24%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-stone-600 dark:text-stone-300">Verbal / class reps</span>
-                  <span className="font-semibold text-amber-600">19%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-stone-600 dark:text-stone-300">One-way forms</span>
-                  <span className="font-semibold text-stone-500">15%</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Chart 3: Frustration Severity 0 to 10 */}
-            <div className="lg:col-span-4 p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col justify-between space-y-5">
-              <div>
-                <h3 className="text-lg font-heading text-charcoal dark:text-white">
-                  Biggest pain severity
-                </h3>
-                <p className="text-[13px] font-subheading text-stone-500">
-                  Rated 0 to 10 by students & leads
-                </p>
-              </div>
-
-              <div className="space-y-3.5">
-                {frustrationScores.map((item) => (
-                  <div key={item.label} className="space-y-1">
-                    <div className="flex items-baseline justify-between gap-2 text-[13px]">
-                      <span className="font-body text-stone-700 dark:text-stone-300 truncate">
-                        {item.label}
-                      </span>
-                      <span className="font-mono font-semibold text-charcoal dark:text-white tabular-nums shrink-0">
-                        {item.score.toFixed(1)}
-                      </span>
-                    </div>
-                    <div className="h-1.5 w-full rounded-full bg-stone-100 dark:bg-stone-800 overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-lavender"
-                        style={{ width: `${item.score * 10}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      </RevealOnScroll>
-
-      {/* =================================================================== */}
-      {/* 04. WHERE THE OPPORTUNITY WAS (OPPORTUNITY LANDSCAPE MATRIX)        */}
-      {/* =================================================================== */}
-      <RevealOnScroll direction="up">
-        <section className="space-y-6">
-          <div className="max-w-3xl space-y-2.5">
-            <p className="text-[13px] font-subheading font-semibold text-coral">
-              Where the opportunity was
-            </p>
-            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight text-balance">
-              Pinpointing high-importance, poorly served moments
-            </h2>
-            <p className="text-base font-body text-stone-600 dark:text-stone-300 leading-relaxed">
-              Plotting every attendee need by importance versus current satisfaction made the priority unmistakable: sign-up and posters worked fine, while post-registration confirmation, live room changes, and certificates sat severely underserved.
-            </p>
-          </div>
-
-          <OpportunityLandscapeChart />
-        </section>
-      </RevealOnScroll>
-
-      {/* =================================================================== */}
-      {/* 05. ECOSYSTEM CARTOGRAPHY, ARCHETYPES & STRESS-TEST SCENARIOS       */}
-      {/* =================================================================== */}
-      <RevealOnScroll direction="up">
-        <section className="space-y-10">
-          <div className="max-w-3xl space-y-2.5">
-            <p className="text-[13px] font-subheading font-semibold text-coral">
-              Understanding the system
-            </p>
-            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight text-balance">
-              Mapping every actor, dependency, and scenario in the loop
-            </h2>
-            <p className="text-base font-body text-stone-600 dark:text-stone-300 leading-relaxed">
-              Designing for "everyone on campus" produces another portal nobody opens. I grouped every institutional actor by what they control and what they need on event day.
-            </p>
-          </div>
-
-          {/* Interactive Radial Bezier Stakeholder Map */}
-          <StakeholderEcosystemMap onZoomSlide={setViewingImage} />
-
-          {/* 4 Archetypes + 6 Survival Scenarios */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {archetypes.map((person) => (
-                <div
-                  key={person.name}
-                  className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2"
-                >
-                  <h3 className="text-lg font-heading text-charcoal dark:text-white">
-                    {person.name}
-                  </h3>
-                  <p className="text-[13px] font-body text-stone-600 dark:text-stone-400 leading-relaxed">
-                    {person.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="lg:col-span-5 p-6 rounded-2xl bg-[#F7F5F2] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-4">
-              <div>
-                <h3 className="text-lg font-heading text-charcoal dark:text-white">
-                  Six scenarios the system had to survive
-                </h3>
-                <p className="text-[13px] font-body text-stone-500 dark:text-stone-400 mt-0.5">
-                  Every layout and data flow was stress-tested against these real campus cases:
-                </p>
-              </div>
-              <ol className="space-y-2">
-                {survivalScenarios.map((scenario, idx) => (
-                  <li
-                    key={scenario}
-                    className="flex items-start gap-3 text-[13px] font-body text-charcoal dark:text-stone-200"
-                  >
-                    <span className="font-mono text-coral font-semibold shrink-0 tabular-nums">
-                      0{idx + 1}
-                    </span>
-                    <span>{scenario}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-        </section>
-      </RevealOnScroll>
-
-      {/* =================================================================== */}
-      {/* 06. JOURNEY THROUGH THE OLD SYSTEM & RESEARCH CONCLUSION            */}
-      {/* =================================================================== */}
-      <RevealOnScroll direction="up">
-        <section className="space-y-8">
-          <OldSystemJourneyMap onZoomSlide={setViewingImage} />
-
-          {/* Research Conclusion Split Card (Matching classroom-orange conclusion block) */}
-          <div className="rounded-3xl bg-[#F7F5F2] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            <div className="lg:col-span-5">
-              <div className="aspect-square max-w-[290px] mx-auto rounded-3xl bg-gradient-to-br from-[#FDE8D7] via-[#FFF3EB] to-[#EDE9FE] dark:from-coral/20 dark:via-stone-800 dark:to-lavender/20 border border-stone-200/80 dark:border-stone-700 p-5 grid grid-cols-2 gap-3">
-                {[
-                  { num: '01', label: 'Register', sub: 'Provision link' },
-                  { num: '02', label: 'Prepare', sub: 'Map & rules' },
-                  { num: '03', label: 'Attend', sub: 'QR & live diffs' },
-                  { num: '04', label: 'Certify', sub: '1-tap proof' }
-                ].map((quad) => (
-                  <div
-                    key={quad.label}
-                    className="rounded-2xl bg-white/85 dark:bg-stone-900/85 backdrop-blur-xs p-4 flex flex-col justify-between border border-white/60 dark:border-stone-700"
-                  >
-                    <span className="text-xs font-mono text-coral font-semibold tabular-nums">
-                      {quad.num}
-                    </span>
-                    <div>
-                      <span className="text-base font-heading text-charcoal dark:text-white block">
-                        {quad.label}
-                      </span>
-                      <span className="text-[13px] font-body text-stone-500 dark:text-stone-400">
-                        {quad.sub}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="lg:col-span-7 space-y-5">
-              <div className="flex items-center gap-2 text-[13px] font-subheading text-stone-500 dark:text-stone-400">
-                <span className="text-coral font-semibold">Research conclusion</span>
-                <span aria-hidden="true">·</span>
-                <span>4 focus stages</span>
-              </div>
-
-              <h3 className="text-2xl sm:text-3xl font-heading text-charcoal dark:text-white text-balance">
-                Why the intervention had to be attendee-first
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-1">
-                <div className="space-y-1.5">
-                  <h4 className="text-sm font-subheading font-semibold text-charcoal dark:text-white">
-                    Problems to solve
-                  </h4>
-                  <p className="text-[13px] font-body text-stone-600 dark:text-stone-300 leading-relaxed">
-                    Eliminate the post-form blackout, decouple live room changes from printed posters, and harmonize 9 student sub-teams without forcing heavy enterprise software.
-                  </p>
-                </div>
-                <div className="space-y-1.5">
-                  <h4 className="text-sm font-subheading font-semibold text-charcoal dark:text-white">
-                    Our mission
-                  </h4>
-                  <p className="text-[13px] font-body text-stone-600 dark:text-stone-300 leading-relaxed">
-                    Because the attendee is the single point where all fragmented backstage work becomes visible, give every registrant one living web card that stays accurate from sign-up to certificate.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </RevealOnScroll>
-
-      {/* =================================================================== */}
-      {/* 07. THE SYSTEM SHIFT, LIVING LOOP & NODE-AND-BRANCH FLOWCHARTS      */}
-      {/* =================================================================== */}
-      <RevealOnScroll direction="up">
-        <section className="space-y-12">
-          <div className="max-w-3xl space-y-2.5">
-            <p className="text-[13px] font-subheading font-semibold text-coral">The system shift</p>
-            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight text-balance">
-              From scattered chat forwards to one living attendee loop
-            </h2>
-            <p className="text-base font-body text-stone-600 dark:text-stone-300 leading-relaxed">
-              Instead of asking volunteers to abandon their operational autonomy or asking students to install an app for a one-day symposium, the new architecture connects existing sub-team inputs into one personal URL.
-            </p>
-          </div>
-
-          {/* 4 Strategic Pillars */}
+          {/* Research Cohorts & Stakeholders Analyzed */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              {
-                title: 'Uses existing behaviour',
-                desc: 'Students already submit forms and tap WhatsApp links—zero new habits to teach.'
-              },
-              {
-                title: 'Zero app download',
-                desc: 'Loads instantaneously in any mobile browser even on congested auditorium Wi-Fi.'
-              },
-              {
-                title: 'Protects team autonomy',
-                desc: 'Each of the 9 sub-teams updates only their own slice without central bottlenecks.'
-              },
-              {
-                title: 'Closes the proof loop',
-                desc: 'QR gate check-in automatically unlocks official PDF certificates right after sessions.'
-              }
-            ].map((pillar) => (
-              <div
-                key={pillar.title}
-                className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2"
-              >
-                <h3 className="text-base font-heading text-charcoal dark:text-white">
-                  {pillar.title}
-                </h3>
-                <p className="text-[13px] font-body text-stone-600 dark:text-stone-400 leading-relaxed">
-                  {pillar.desc}
-                </p>
+            <div className="p-5 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-lavender/10 text-lavender flex items-center justify-center">
+                <Building2 size={20} />
               </div>
-            ))}
-          </div>
-
-          {/* Dashed Loop Diagram + Venue Relocation Trace */}
-          <LivingCardLoopDiagram onZoomSlide={setViewingImage} />
-
-          {/* Full Node-and-Branch Flowchart (Attendee User Flow + Backend System Pipeline) */}
-          <SystemArchitectureFlowchart onZoomSlide={setViewingImage} />
-        </section>
-      </RevealOnScroll>
-
-      {/* =================================================================== */}
-      {/* 08. HIGH-FIDELITY ANNOTATED DESIGN & BEFORE / AFTER                 */}
-      {/* =================================================================== */}
-      <RevealOnScroll direction="up">
-        <section className="space-y-12">
-          <div className="max-w-3xl space-y-2.5">
-            <p className="text-[13px] font-subheading font-semibold text-coral">
-              High-fidelity design
-            </p>
-            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight text-balance">
-              Progressive hierarchy designed for noisy auditorium corridors
-            </h2>
-            <p className="text-base font-body text-stone-600 dark:text-stone-300 leading-relaxed">
-              Every decision from our systems maps translated into five clear progressive levels on a single mobile screen.
-            </p>
-          </div>
-
-          {/* Annotated Interactive Event Journey Card */}
-          <AnnotatedEventJourneyCard onZoomSlide={setViewingImage} />
-
-          {/* Before & After Comparison ("Then and now, side by side") */}
-          <div className="rounded-3xl bg-[#F7F5F2] dark:bg-stone-900 border border-stone-200 dark:border-stone-800 p-5 sm:p-8 space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <p className="text-[13px] font-subheading font-semibold text-coral">
-                  Before & after
-                </p>
-                <h3 className="text-xl sm:text-3xl font-heading text-charcoal dark:text-white mt-0.5">
-                  Then and now: legacy relay vs. Event Journey Card
-                </h3>
-              </div>
-
-              <div className="inline-flex p-1 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
-                {[
-                  { id: 'both', label: 'Side by side' },
-                  { id: 'old', label: 'Legacy system' },
-                  { id: 'new', label: 'New system' }
-                ].map((mode) => (
-                  <button
-                    key={mode.id}
-                    onClick={() => setCompareTab(mode.id as 'both' | 'old' | 'new')}
-                    className={`px-3 py-1.5 rounded-lg text-[13px] font-subheading font-medium transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
-                      compareTab === mode.id
-                        ? 'bg-charcoal text-white dark:bg-white dark:text-charcoal'
-                        : 'text-stone-600 dark:text-stone-400 hover:text-charcoal dark:hover:text-white'
-                    }`}
-                  >
-                    {mode.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div
-              className={`grid grid-cols-1 ${
-                compareTab === 'both' ? 'lg:grid-cols-2' : ''
-              } gap-6`}
-            >
-              {compareTab !== 'new' && (
-                <div className="rounded-2xl bg-white dark:bg-stone-950 border border-stone-200 dark:border-stone-800 p-5 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-lg font-heading text-charcoal dark:text-white">
-                      Legacy campus workflow
-                    </h4>
-                    <button
-                      onClick={() =>
-                        setViewingImage('/assets/projects/systems-design/systems_slide_21.png')
-                      }
-                      className="text-[13px] font-subheading text-coral hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <ZoomIn size={13} /> Zoom dependency map
-                    </button>
-                  </div>
-
-                  <ol className="space-y-3">
-                    {[
-                      'Event details live across 9 separate WhatsApp sub-groups with no shared record.',
-                      'Printed campus posters lock room names permanently days before the event.',
-                      'Submitting a Google Form ends in silence—no entry pass or confirmation badge.',
-                      'Morning hall changes trigger 100+ frantic phone calls to student organizers.',
-                      'Attendance sheets get misplaced, delaying participation certificates by weeks.'
-                    ].map((pt, i) => (
-                      <li key={pt} className="flex items-start gap-3 text-[13px] font-body text-stone-600 dark:text-stone-400">
-                        <span className="w-5 h-5 rounded-full bg-stone-200 dark:bg-stone-800 text-charcoal dark:text-stone-300 text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5 tabular-nums">
-                          {i + 1}
-                        </span>
-                        <span>{pt}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              )}
-
-              {compareTab !== 'old' && (
-                <div className="rounded-2xl bg-white dark:bg-stone-950 border border-coral/40 p-5 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-lg font-heading text-charcoal dark:text-white">
-                      Event Journey Card system
-                    </h4>
-                    <button
-                      onClick={() =>
-                        setViewingImage('/assets/projects/systems-design/journey_card_08.png')
-                      }
-                      className="text-[13px] font-subheading text-coral hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      <ZoomIn size={13} /> Zoom resolution slide
-                    </button>
-                  </div>
-
-                  <ol className="space-y-3">
-                    {[
-                      '9 sub-teams update scoped fields inside one structured Central Event Database.',
-                      'Static awareness posters point via QR to a live, continuously updated web layer.',
-                      'Form submission immediately dispatches a personal URL with verified status and QR.',
-                      'Room changes display explicit Old vs. New diff cards across all cards in ≤ 5 minutes.',
-                      'Gate QR scan verifies attendance and unlocks a 1-tap downloadable PDF certificate.'
-                    ].map((pt, i) => (
-                      <li key={pt} className="flex items-start gap-3 text-[13px] font-body text-charcoal dark:text-stone-200">
-                        <span className="w-5 h-5 rounded-full bg-coral text-white text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5 tabular-nums">
-                          {i + 1}
-                        </span>
-                        <span>{pt}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-      </RevealOnScroll>
-
-      {/* =================================================================== */}
-      {/* 09. UI COMPONENTS: SMALL PIECES, EACH WITH ONE JOB                  */}
-      {/* =================================================================== */}
-      <RevealOnScroll direction="up">
-        <section className="space-y-8">
-          <div className="max-w-3xl space-y-2.5">
-            <p className="text-[13px] font-subheading font-semibold text-coral">UI components</p>
-            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight text-balance">
-              Small pieces, each with one job
-            </h2>
-            <p className="text-base font-body text-stone-600 dark:text-stone-300 leading-relaxed">
-              Every module inside the Event Journey Card follows the same quiet anatomy—one line of context, one verified status or diff, and one clear action—answering the exact question an attendee has in that moment.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {singleJobCards.map((card) => {
-              const Icon = card.icon;
-              return (
-                <div
-                  key={card.question}
-                  className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col justify-between space-y-4"
-                >
-                  <div className="space-y-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#F7F5F2] dark:bg-stone-800 text-coral flex items-center justify-center">
-                      <Icon size={18} />
-                    </div>
-                    <h3 className="text-lg font-heading text-charcoal dark:text-white">
-                      {card.question}
-                    </h3>
-                    <p className="text-[13px] font-body text-stone-600 dark:text-stone-400 leading-relaxed">
-                      {card.answer}
-                    </p>
-                  </div>
-                  <div className="pt-3 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-[13px] font-subheading text-stone-500 dark:text-stone-400">
-                    <span>{card.metric}</span>
-                    <ShieldCheck size={15} className="text-lavender" />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      </RevealOnScroll>
-
-      {/* =================================================================== */}
-      {/* 10. OUTCOME BENCHMARKS & ORIGINAL SLIDE ARCHIVE                     */}
-      {/* =================================================================== */}
-      <RevealOnScroll direction="up">
-        <section className="space-y-14">
-          <div className="rounded-3xl bg-charcoal dark:bg-stone-900 text-white p-6 sm:p-10 lg:p-12 border border-stone-800 space-y-8">
-            <div className="max-w-2xl space-y-2">
-              <p className="text-[13px] font-subheading font-semibold text-coral">Outcome</p>
-              <h2 className="text-2xl sm:text-4xl font-heading font-normal tracking-wide text-balance">
-                The service targets this system was built to hit
-              </h2>
-              <p className="text-sm sm:text-base font-body text-stone-300 leading-relaxed">
-                Moving from scattered chat forwards to a centralized database + living web card turns backstage coordination into measurable clarity for both attendees and volunteer teams.
+              <h3 className="text-base font-heading font-normal text-charcoal dark:text-white">
+                University Administration
+              </h3>
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                Deans, Facility Managers, Finance, and Security. Controls room sanctions, official circulars, and institutional stamping.
               </p>
+              <div className="text-[11px] font-subheading text-lavender font-medium">
+                Focus: Budget approvals & room access
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-4 border-t border-stone-800">
-              <div className="space-y-1.5">
-                <span className="text-3xl sm:text-5xl font-heading text-coral block tabular-nums">
+            <div className="p-5 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-coral/10 text-coral flex items-center justify-center">
+                <School size={20} />
+              </div>
+              <h3 className="text-base font-heading font-normal text-charcoal dark:text-white">
+                Faculty Coordinators
+              </h3>
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                Department Heads & Academic Mentors. Mediate between administrative directives and student initiative workflows.
+              </p>
+              <div className="text-[11px] font-subheading text-coral font-medium">
+                Focus: Academic compliance & speakers
+              </div>
+            </div>
+
+            <div className="p-5 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-lavender/10 text-lavender flex items-center justify-center">
+                <Users size={20} />
+              </div>
+              <h3 className="text-base font-heading font-normal text-charcoal dark:text-white">
+                Student Organizing Teams
+              </h3>
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                9 functional sub-teams (PR, Design, Logistics, Tech, Hospitality, Stage). Execute daily tasks via informal WhatsApp threads.
+              </p>
+              <div className="text-[11px] font-subheading text-lavender font-medium">
+                Focus: Operations, promotion & check-in
+              </div>
+            </div>
+
+            <div className="p-5 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-coral/10 text-coral flex items-center justify-center">
+                <UserCheck size={20} />
+              </div>
+              <h3 className="text-base font-heading font-normal text-charcoal dark:text-white">
+                Attendees & Participants
+              </h3>
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                Internal undergraduate students, postgraduates, and external delegates. At the receiving end of broken communication chains.
+              </p>
+              <div className="text-[11px] font-subheading text-coral font-medium">
+                Focus: Schedule clarity & certificates
+              </div>
+            </div>
+          </div>
+
+          {/* Research Data & Methodological Scope */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-stone-100 dark:border-stone-800 pb-3">
+              <div>
+                <span className="text-[11px] font-subheading font-bold text-lavender uppercase tracking-wider">
+                  Field Discovery Methodology
+                </span>
+                <h3 className="text-xl font-heading font-normal text-charcoal dark:text-white mt-0.5">
+                  Multi-Perspective Service Systems Audit
+                </h3>
+              </div>
+              <span className="text-xs font-subheading text-stone-500">
+                47 In-Depth Interviews · 3 Live Shadowed Events
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <div className="p-5 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-2">
+                <span className="text-2xl font-heading text-lavender font-normal block">
+                  120+
+                </span>
+                <h4 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Communication Logs Traced
+                </h4>
+                <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                  Tracked WhatsApp group messages, circular paper trails, Google Forms, and post-event certificate complaint logs to pinpoint where communication drops.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-2">
+                <span className="text-2xl font-heading text-coral font-normal block">
+                  84%
+                </span>
+                <h4 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Attendees Missed Key Updates
+                </h4>
+                <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                  Of surveyed attendees, 84% reported missing at least one critical schedule shift or venue change due to uncoordinated broadcast channels.
+                </p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-2">
+                <span className="text-2xl font-heading text-lavender font-normal block">
+                  72h
+                </span>
+                <h4 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Approval Delay Lag
+                </h4>
+                <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                  Administrative room and budget approvals routinely took 72+ hours, leaving promotion teams unable to publish accurate posters until days before events.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </RevealOnScroll>
+
+      {/* ============================================================= */}
+      {/* STEP 2: PROBLEM STATEMENT (NO IMAGE - PURE ARCHITECTURAL)     */}
+      {/* ============================================================= */}
+      <RevealOnScroll direction="up">
+        <section id="step-2" className="space-y-8 scroll-mt-20">
+          
+          <div className="space-y-2 border-l-2 border-coral pl-4">
+            <span className="text-xs font-subheading uppercase tracking-widest text-coral font-bold block">
+              Step 2 of 8 · Problem Framing
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight">
+              Step 2: Problem Statement
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base max-w-3xl leading-relaxed font-subheading">
+              Framing the core breakdown observed across institutional academic events without relying on superficial symptoms.
+            </p>
+          </div>
+
+          {/* Pure Typographic Problem Statement Card (No Image) */}
+          <div className="p-8 sm:p-12 rounded-3xl bg-white dark:bg-stone-900 border-2 border-coral/30 shadow-lg space-y-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-coral/5 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="space-y-3">
+              <span className="text-xs font-subheading font-bold uppercase tracking-widest text-coral">
+                Core Problem Statement
+              </span>
+              <blockquote className="text-xl sm:text-3xl font-heading font-normal text-charcoal dark:text-white leading-snug tracking-tight">
+                "Event information is managed across individual people, disconnected communication channels, and separate stages without a centralized system for ownership, updating, and distribution, causing information to be lost, delayed, or inconsistent from planning through post-event communication."
+              </blockquote>
+            </div>
+
+            {/* Three Structural Breakdowns */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-4 border-t border-stone-200 dark:border-stone-800">
+              <div className="space-y-2">
+                <span className="text-xs font-heading font-bold text-coral">01 · FRAGMENTED CUSTODY</span>
+                <h4 className="text-base font-heading font-normal text-charcoal dark:text-white">
+                  Information Lives in Heads
+                </h4>
+                <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                  Event logistics exist as personal mental notes or unshared chats between key coordinators rather than documented operational guidelines.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs font-heading font-bold text-lavender">02 · CHANNEL CACOPHONY</span>
+                <h4 className="text-base font-heading font-normal text-charcoal dark:text-white">
+                  Contradictory Signals
+                </h4>
+                <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                  Printed posters, forwarded WhatsApp blasts, email circulars, and Google Forms state conflicting timings, leaving attendees puzzled.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs font-heading font-bold text-coral">03 · TEMPORAL DISCONNECT</span>
+                <h4 className="text-base font-heading font-normal text-charcoal dark:text-white">
+                  Post-Form Blackout
+                </h4>
+                <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                  Communication halts the second an attendee hits 'Submit' on Google Forms, leaving a dead zone right up until the auditorium doors open.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </RevealOnScroll>
+
+      {/* ============================================================= */}
+      {/* STEP 3: ROOT CAUSE (NO IMAGE - PURE ARCHITECTURAL)             */}
+      {/* ============================================================= */}
+      <RevealOnScroll direction="up">
+        <section id="step-3" className="space-y-8 scroll-mt-20">
+          
+          <div className="space-y-2 border-l-2 border-lavender pl-4">
+            <span className="text-xs font-subheading uppercase tracking-widest text-lavender font-bold block">
+              Step 3 of 8 · Root Cause Diagnosis
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight">
+              Step 3: Root Cause
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base max-w-3xl leading-relaxed font-subheading">
+              Moving past superficial excuses to identify the structural origin of communication failures in campus academic events.
+            </p>
+          </div>
+
+          {/* Root Cause Core Assertion (No Image) */}
+          <div className="p-8 sm:p-12 rounded-3xl bg-lavender/5 dark:bg-lavender/10 border-2 border-lavender/30 space-y-6">
+            <div className="space-y-2">
+              <span className="text-xs font-subheading font-bold uppercase tracking-widest text-lavender">
+                The Fundamental Cause
+              </span>
+              <h3 className="text-xl sm:text-3xl font-heading font-normal text-charcoal dark:text-white leading-snug">
+                Lack of a centralized information management system with clear ownership and defined information flow.
+              </h3>
+            </div>
+            <p className="text-sm font-subheading text-stone-600 dark:text-stone-300 leading-relaxed max-w-3xl">
+              Campus events do not collapse from volunteer apathy or poor student intentions. They collapse because the university operates on an ad-hoc, informal human relay without an authoritative system of record. Every team maintains their own isolated mental model of the event.
+            </p>
+
+            {/* Root Cause Mechanism Diagram (Native Visual Flow) */}
+            <div className="p-6 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-4">
+              <span className="text-[11px] font-heading text-stone-400 dark:text-stone-500 uppercase tracking-widest block">
+                The Structural Disintegration Mechanism
+              </span>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-850 border border-stone-200/70 dark:border-stone-800 space-y-2">
+                  <div className="flex items-center gap-2 text-coral text-xs font-heading font-bold">
+                    <AlertTriangle size={15} />
+                    <span>01. NO SINGLE TRUTH</span>
+                  </div>
+                  <h4 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                    Unsynchronized Silos
+                  </h4>
+                  <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                    Venue team shifts rooms; Tech team assumes old AV setup; PR team broadcasts third schedule. Zero database coordinates them.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-850 border border-stone-200/70 dark:border-stone-800 space-y-2">
+                  <div className="flex items-center gap-2 text-lavender text-xs font-heading font-bold">
+                    <GitBranch size={15} />
+                    <span>02. TELEPHONE DECAY</span>
+                  </div>
+                  <h4 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                    Signal Attenuation
+                  </h4>
+                  <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                    Updates pass through 4 human intermediaries (Admin → Faculty → Core Team → Attendees), degrading precision at every manual step.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-850 border border-stone-200/70 dark:border-stone-800 space-y-2">
+                  <div className="flex items-center gap-2 text-coral text-xs font-heading font-bold">
+                    <Clock size={15} />
+                    <span>03. ASYNC BOTTLENECK</span>
+                  </div>
+                  <h4 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                    Delayed Approvals
+                  </h4>
+                  <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                    Because approvals are gatekept by busy university deans, changes remain unconfirmed until minutes before start time.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </RevealOnScroll>
+
+      {/* ============================================================= */}
+      {/* STEP 4: SUCCESS METRICS (REDESIGNED NATIVELY)                  */}
+      {/* ============================================================= */}
+      <RevealOnScroll direction="up">
+        <section id="step-4" className="space-y-8 scroll-mt-20">
+          
+          <div className="space-y-2 border-l-2 border-coral pl-4">
+            <span className="text-xs font-subheading uppercase tracking-widest text-coral font-bold block">
+              Step 4 of 8 · Empirical Targets
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight">
+              Step 4: Success Metrics
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base max-w-3xl leading-relaxed font-subheading">
+              Four measurable performance benchmarks defined by Anushka Saraf to objectively validate whether the redesigned system resolves the communication breakdown.
+            </p>
+          </div>
+
+          {/* 4 Quantitative Metrics Cards (Redesigned with custom visual indicators) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            {/* Metric 1 */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-3 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-heading text-lavender font-bold uppercase tracking-wider">
+                  AUTONOMY BENCHMARK
+                </span>
+                <span className="text-[11px] font-subheading text-stone-400">Target</span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-4xl sm:text-5xl font-heading text-lavender font-normal block tabular-nums">
                   ≥ 90%
                 </span>
-                <p className="text-sm font-subheading font-medium text-white">
-                  Self-service clarity
-                </p>
-                <p className="text-[13px] font-body text-stone-400">
-                  Attendees find schedules, venues, and passes without messaging organizers
-                </p>
+                <h3 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Self-Service Information
+                </h3>
               </div>
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                Attendees find schedule, venue, speaker, and pass information independently without messaging or calling organizers.
+              </p>
+              <div className="pt-2 border-t border-stone-100 dark:border-stone-800">
+                <div className="w-full bg-stone-100 dark:bg-stone-800 h-2 rounded-full overflow-hidden">
+                  <div className="bg-lavender h-full rounded-full" style={{ width: '90%' }} />
+                </div>
+                <div className="flex justify-between text-[10px] font-subheading text-stone-400 mt-1">
+                  <span>Baseline: 34%</span>
+                  <span className="text-lavender font-bold">Goal: 90%+</span>
+                </div>
+              </div>
+            </div>
 
-              <div className="space-y-1.5">
-                <span className="text-3xl sm:text-5xl font-heading text-white block tabular-nums">
+            {/* Metric 2 */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-3 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-heading text-coral font-bold uppercase tracking-wider">
+                  SYNC VELOCITY
+                </span>
+                <span className="text-[11px] font-subheading text-stone-400">Latency</span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-4xl sm:text-5xl font-heading text-coral font-normal block tabular-nums">
                   ≤ 5 min
                 </span>
-                <p className="text-sm font-subheading font-medium text-white">
-                  Update propagation
-                </p>
-                <p className="text-[13px] font-body text-stone-400">
-                  Approved room or timing changes reflect across all attendee cards
-                </p>
-              </div>
-
-              <div className="space-y-1.5">
-                <span className="text-3xl sm:text-5xl font-heading text-lavender block tabular-nums">
-                  ≥ 50%
-                </span>
-                <p className="text-sm font-subheading font-medium text-white">
-                  Fewer panic queries
-                </p>
-                <p className="text-[13px] font-body text-stone-400">
-                  Drop in repetitive morning calls asking where halls or passes are
-                </p>
-              </div>
-
-              <div className="space-y-1.5">
-                <span className="text-3xl sm:text-5xl font-heading text-white block tabular-nums">
-                  ≥ 90%
-                </span>
-                <p className="text-sm font-subheading font-medium text-white">
-                  Full-journey retention
-                </p>
-                <p className="text-[13px] font-body text-stone-400">
-                  Single link retained from registration through certificate download
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Original Presentation Boards & Maps Archive */}
-          <div className="space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-              <div>
-                <p className="text-[13px] font-subheading font-semibold text-coral">
-                  Process documentation
-                </p>
-                <h3 className="text-xl sm:text-3xl font-heading text-charcoal dark:text-white">
-                  Original systems boards & presentation slides
+                <h3 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Update Propagation Speed
                 </h3>
               </div>
-              <p className="text-[13px] font-subheading text-stone-500">
-                Click any board to inspect in full resolution
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                Approved logistics and venue shifts reflect across all active attendee cards within five minutes of organizer input.
+              </p>
+              <div className="pt-2 border-t border-stone-100 dark:border-stone-800">
+                <div className="w-full bg-stone-100 dark:bg-stone-800 h-2 rounded-full overflow-hidden">
+                  <div className="bg-coral h-full rounded-full" style={{ width: '95%' }} />
+                </div>
+                <div className="flex justify-between text-[10px] font-subheading text-stone-400 mt-1">
+                  <span>Baseline: 4+ hrs</span>
+                  <span className="text-coral font-bold">Goal: &lt;5 mins</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Metric 3 */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-3 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-heading text-lavender font-bold uppercase tracking-wider">
+                  QUERY RELIEF
+                </span>
+                <span className="text-[11px] font-subheading text-stone-400">Load</span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-4xl sm:text-5xl font-heading text-lavender font-normal block tabular-nums">
+                  ≥ 50%
+                </span>
+                <h3 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Query Volume Reduction
+                </h3>
+              </div>
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                Reduction in repetitive panic calls and frantic WhatsApp inquiries regarding basic timings, room numbers, and passes.
+              </p>
+              <div className="pt-2 border-t border-stone-100 dark:border-stone-800">
+                <div className="w-full bg-stone-100 dark:bg-stone-800 h-2 rounded-full overflow-hidden">
+                  <div className="bg-lavender h-full rounded-full" style={{ width: '50%' }} />
+                </div>
+                <div className="flex justify-between text-[10px] font-subheading text-stone-400 mt-1">
+                  <span>Legacy: 100+ calls</span>
+                  <span className="text-lavender font-bold">Goal: -50%+</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Metric 4 */}
+            <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-sm space-y-3 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-heading text-coral font-bold uppercase tracking-wider">
+                  LIFECYCLE RETENTION
+                </span>
+                <span className="text-[11px] font-subheading text-stone-400">Adoption</span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-4xl sm:text-5xl font-heading text-coral font-normal block tabular-nums">
+                  ≥ 90%
+                </span>
+                <h3 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Full-Journey Retention
+                </h3>
+              </div>
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                Attendees retain and utilize their personal web card link across all five phases: registration, pre-event, live day, and certificate.
+              </p>
+              <div className="pt-2 border-t border-stone-100 dark:border-stone-800">
+                <div className="w-full bg-stone-100 dark:bg-stone-800 h-2 rounded-full overflow-hidden">
+                  <div className="bg-coral h-full rounded-full" style={{ width: '90%' }} />
+                </div>
+                <div className="flex justify-between text-[10px] font-subheading text-stone-400 mt-1">
+                  <span>Legacy: Dropped at Form</span>
+                  <span className="text-coral font-bold">Goal: 90%+</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+      </RevealOnScroll>
+
+      {/* ============================================================= */}
+      {/* STEP 5: PROPOSED INTERVENTION IN THE SYSTEM                   */}
+      {/* ============================================================= */}
+      <RevealOnScroll direction="up">
+        <section id="step-5" className="space-y-8 scroll-mt-20">
+          
+          <div className="space-y-2 border-l-2 border-lavender pl-4">
+            <span className="text-xs font-subheading uppercase tracking-widest text-lavender font-bold block">
+              Step 5 of 8 · Strategic Systems Shift
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight">
+              Step 5: Proposed Intervention in the System
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base max-w-3xl leading-relaxed font-subheading">
+              Why an Attendee-First Architecture? Re-engineering the communication paradigm from monolithic management portals to a unified living card.
+            </p>
+          </div>
+
+          {/* Strategic Rationale Visual Card */}
+          <div className="p-8 sm:p-10 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-md space-y-8">
+            <div className="space-y-2">
+              <span className="text-[11px] font-subheading font-bold uppercase tracking-widest text-lavender">
+                The Core Strategic Pivot
+              </span>
+              <h3 className="text-xl sm:text-2xl font-heading font-normal text-charcoal dark:text-white">
+                "Because the attendee is the single point where all fragmented information becomes visible."
+              </h3>
+              <p className="text-xs sm:text-sm font-subheading text-stone-600 dark:text-stone-300 leading-relaxed max-w-3xl">
+                Traditional campus software attempts to force faculty, students, and administration into heavy enterprise portals that nobody wants to install. Our proposed intervention inverts the system: instead of replacing human sub-teams, connect their independent outputs into one unified living web card owned by the attendee.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {archivalSlides.map((slide) => (
+            {/* The 4 Architectural Pillars (Redesigned with custom data visualization) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="p-5 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-2">
+                <div className="w-8 h-8 rounded-xl bg-lavender/10 text-lavender flex items-center justify-center font-heading text-sm">
+                  01
+                </div>
+                <h4 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Uses Existing Behaviour
+                </h4>
+                <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                  Students already register online, open links, and check phones. The card leverages existing habits instead of forcing unlearned behaviors.
+                </p>
+                <div className="pt-2 text-[10px] font-subheading text-lavender font-bold">
+                  Zero Habit Friction
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-2">
+                <div className="w-8 h-8 rounded-xl bg-coral/10 text-coral flex items-center justify-center font-heading text-sm">
+                  02
+                </div>
+                <h4 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Zero App Download
+                </h4>
+                <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                  Operates as a lightweight responsive web card. Instant loading even on slow campus Wi-Fi networks without App Store barriers.
+                </p>
+                <div className="pt-2 text-[10px] font-subheading text-coral font-bold">
+                  Instant Web Access
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-2">
+                <div className="w-8 h-8 rounded-xl bg-lavender/10 text-lavender flex items-center justify-center font-heading text-sm">
+                  03
+                </div>
+                <h4 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Does Not Replace Teams
+                </h4>
+                <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                  Sub-teams retain ownership of their operational slice (PR, logistics, venues). The system harmonizes data without micromanaging volunteers.
+                </p>
+                <div className="pt-2 text-[10px] font-subheading text-lavender font-bold">
+                  Sub-Team Autonomy
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-2">
+                <div className="w-8 h-8 rounded-xl bg-coral/10 text-coral flex items-center justify-center font-heading text-sm">
+                  04
+                </div>
+                <h4 className="text-sm font-heading font-normal text-charcoal dark:text-white">
+                  Makes System Visible
+                </h4>
+                <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                  Transforms fragmented backstage chaos into one cohesive stream for the attendee, from sign-up through to digital certificate issuance.
+                </p>
+                <div className="pt-2 text-[10px] font-subheading text-coral font-bold">
+                  Complete Transparency
+                </div>
+              </div>
+            </div>
+
+            {/* Macro Architectural Paradigm Shift Diagram */}
+            <div className="p-6 rounded-2xl bg-stone-100 dark:bg-stone-850 border border-stone-200 dark:border-stone-800 space-y-4">
+              <span className="text-[11px] font-heading text-stone-500 uppercase tracking-wider block">
+                The Structural Transformation
+              </span>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2">
+                  <span className="text-xs font-heading font-bold text-coral">LEGACY FRAGMENTED SYSTEM</span>
+                  <div className="space-y-1 text-xs font-subheading text-stone-600 dark:text-stone-400">
+                    <p className="line-through text-stone-400">Administration → Faculty → WhatsApp Group → Forward → Attendee</p>
+                    <p className="text-stone-500">Result: 4 human hops, lost updates, panic queries, unclosed feedback loop.</p>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-lavender/40 space-y-2">
+                  <span className="text-xs font-heading font-bold text-lavender">EVENT JOURNEY CARD SYSTEM</span>
+                  <div className="space-y-1 text-xs font-subheading text-charcoal dark:text-white font-medium">
+                    <p className="text-lavender">9 Sub-Teams → Unified Event Database → Living Attendee Card</p>
+                    <p className="text-stone-600 dark:text-stone-300 text-xs font-normal">Result: 1 authoritative source, sub-5-minute updates, self-service pass & certificate.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+      </RevealOnScroll>
+
+      {/* ============================================================= */}
+      {/* STEP 6: UNDERSTANDING THE SYSTEM AND RESEARCHING ABOUT IT     */}
+      {/* ============================================================= */}
+      <RevealOnScroll direction="up">
+        <section id="step-6" className="space-y-8 scroll-mt-20">
+          
+          <div className="space-y-2 border-l-2 border-coral pl-4">
+            <span className="text-xs font-subheading uppercase tracking-widest text-coral font-bold block">
+              Step 6 of 8 · Systems Cartography & Modeling
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight">
+              Step 6: Understanding the System and Researching About It
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base max-w-3xl leading-relaxed font-subheading">
+              Redesigning all maps, flows, and analytical charts natively into our project color palette and typography to deconstruct the institutional dynamics of campus academic events.
+            </p>
+          </div>
+
+          {/* Interactive Cartography Console */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xl space-y-6">
+            
+            {/* Map Tabs Ribbon */}
+            <div className="flex flex-wrap gap-2 p-1.5 rounded-2xl bg-stone-100 dark:bg-stone-850 border border-stone-200 dark:border-stone-800">
+              {cartographyMaps.map((mapItem, idx) => (
                 <button
-                  key={slide.src}
-                  onClick={() => setViewingImage(slide.src)}
-                  className="group text-left rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 p-2.5 hover:border-coral transition-colors cursor-zoom-in space-y-2"
+                  key={mapItem.id}
+                  onClick={() => setActiveMapTab(idx)}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-subheading font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+                    activeMapTab === idx
+                      ? 'bg-charcoal text-white dark:bg-white dark:text-charcoal shadow-sm'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-charcoal dark:hover:text-white'
+                  }`}
                 >
-                  <div className="aspect-[16/10] rounded-xl overflow-hidden bg-stone-100 dark:bg-stone-950">
-                    <img
-                      src={slide.src}
-                      alt={slide.title}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="px-1 flex items-center justify-between gap-2">
-                    <span className="text-[13px] font-subheading font-medium text-charcoal dark:text-stone-200 truncate">
-                      {slide.title}
-                    </span>
-                    <ZoomIn
-                      size={13}
-                      className="text-stone-400 group-hover:text-coral transition-colors shrink-0"
-                    />
-                  </div>
+                  <span className={`font-bold ${activeMapTab === idx ? 'text-coral' : 'text-lavender'}`}>
+                    {mapItem.number}
+                  </span>
+                  <span>{mapItem.title.split(' ')[0]} {mapItem.title.split(' ')[1]}</span>
                 </button>
               ))}
             </div>
+
+            {/* Selected Map Showcase Viewport */}
+            {(() => {
+              const currentMap = cartographyMaps[activeMapTab];
+              return (
+                <div className="space-y-6 animate-fadeIn">
+                  
+                  {/* Map Header & Meta */}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-stone-100 dark:border-stone-800 pb-3">
+                    <div>
+                      <span className="text-[11px] font-subheading font-bold text-lavender uppercase tracking-wider">
+                        {currentMap.badge} · Map {currentMap.number} of 06
+                      </span>
+                      <h3 className="text-xl sm:text-2xl font-heading font-normal text-charcoal dark:text-white mt-0.5">
+                        {currentMap.title}
+                      </h3>
+                    </div>
+                    <span className="text-xs font-subheading text-stone-500">
+                      Natively Redesigned Systems Visual
+                    </span>
+                  </div>
+
+                  {/* NATIVE REDESIGNED MAP CANVAS (According to project colors & typography) */}
+                  <div className="p-6 sm:p-8 rounded-2xl bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 min-h-[380px] flex flex-col justify-center">
+                    
+                    {/* MAP 01: ECOSYSTEM */}
+                    {activeMapTab === 0 && (
+                      <div className="space-y-6">
+                        <div className="flex items-center justify-between text-xs font-subheading text-stone-500 border-b border-stone-200 dark:border-stone-800 pb-2">
+                          <span>INSTITUTIONAL RELATIONAL ECOSYSTEM</span>
+                          <span className="text-coral">Signal Transmission Hops: 4 Steps Away</span>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          {/* Tier 1 */}
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-3">
+                              <span className="w-7 h-7 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center font-heading text-xs font-bold">T1</span>
+                              <div>
+                                <h4 className="text-sm font-heading text-charcoal dark:text-white">University Leadership & Administration</h4>
+                                <p className="text-xs font-subheading text-stone-500">Dean of Academics, Registrar, Campus Facilities & Security</p>
+                              </div>
+                            </div>
+                            <span className="text-[11px] font-subheading text-coral font-medium">Authorizes Room & Budget</span>
+                          </div>
+
+                          {/* Connector 1 */}
+                          <div className="flex justify-center -my-1">
+                            <div className="w-0.5 h-4 bg-stone-300 dark:bg-stone-700" />
+                          </div>
+
+                          {/* Tier 2 */}
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-3">
+                              <span className="w-7 h-7 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center font-heading text-xs font-bold">T2</span>
+                              <div>
+                                <h4 className="text-sm font-heading text-charcoal dark:text-white">Faculty Advisors & Department Mentors</h4>
+                                <p className="text-xs font-subheading text-stone-500">Validates Academic Themes, Guest Lecturers & Permissions</p>
+                              </div>
+                            </div>
+                            <span className="text-[11px] font-subheading text-lavender font-medium">Bridges Admin & Students</span>
+                          </div>
+
+                          {/* Connector 2 */}
+                          <div className="flex justify-center -my-1">
+                            <div className="w-0.5 h-4 bg-stone-300 dark:bg-stone-700" />
+                          </div>
+
+                          {/* Tier 3 */}
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-3">
+                              <span className="w-7 h-7 rounded-lg bg-lavender/20 text-lavender flex items-center justify-center font-heading text-xs font-bold">T3</span>
+                              <div>
+                                <h4 className="text-sm font-heading text-charcoal dark:text-white">Core Student Organizing Committee</h4>
+                                <p className="text-xs font-subheading text-stone-500">Student President, Secretary & Overall Event Leads</p>
+                              </div>
+                            </div>
+                            <span className="text-[11px] font-subheading text-lavender font-medium">Coordinates 9 Sub-Teams</span>
+                          </div>
+
+                          {/* Connector 3 */}
+                          <div className="flex justify-center -my-1">
+                            <div className="w-0.5 h-4 bg-stone-300 dark:bg-stone-700" />
+                          </div>
+
+                          {/* Tier 4 */}
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-3">
+                              <span className="w-7 h-7 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center font-heading text-xs font-bold">T4</span>
+                              <div>
+                                <h4 className="text-sm font-heading text-charcoal dark:text-white">Functional Student Sub-Teams</h4>
+                                <p className="text-xs font-subheading text-stone-500">Registrations, PR, Venues, Logistics, Tech, Hospitality</p>
+                              </div>
+                            </div>
+                            <span className="text-[11px] font-subheading text-coral font-medium">Executes Ground Tasks</span>
+                          </div>
+
+                          {/* Connector 4 */}
+                          <div className="flex justify-center -my-1">
+                            <div className="w-0.5 h-4 bg-coral/40" />
+                          </div>
+
+                          {/* Tier 5 (Outermost) */}
+                          <div className="p-4 rounded-xl bg-coral/5 dark:bg-coral/10 border-2 border-coral/30 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div className="flex items-center gap-3">
+                              <span className="w-7 h-7 rounded-lg bg-coral text-white flex items-center justify-center font-heading text-xs font-bold">T5</span>
+                              <div>
+                                <h4 className="text-sm font-heading text-charcoal dark:text-white">Attendees & Delegates (Outermost Ring)</h4>
+                                <p className="text-xs font-subheading text-stone-500">Students seeking clear timings, locations, and valid certification</p>
+                              </div>
+                            </div>
+                            <span className="text-[11px] font-subheading text-coral font-bold">Point of Information Dilution</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* MAP 02: STAKEHOLDERS POWER/INTEREST GRID */}
+                    {activeMapTab === 1 && (
+                      <div className="space-y-6">
+                        <div className="flex items-center justify-between text-xs font-subheading text-stone-500 border-b border-stone-200 dark:border-stone-800 pb-2">
+                          <span>STAKEHOLDER POWER VS. INTEREST MATRIX</span>
+                          <span className="text-lavender">Institutional Governance Analysis</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {/* High Power, High Interest */}
+                          <div className="p-5 rounded-2xl bg-white dark:bg-stone-900 border-2 border-lavender/40 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-heading font-bold text-lavender uppercase tracking-wider">
+                                QUADRANT 1 · MANAGE CLOSELY
+                              </span>
+                              <span className="text-[10px] font-subheading text-stone-400">High Power / High Interest</span>
+                            </div>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">
+                              Core Student Leads & Faculty Mentors
+                            </h4>
+                            <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                              Carry full operational accountability for the event's academic and logistical success. Require real-time visibility across all 9 sub-teams.
+                            </p>
+                          </div>
+
+                          {/* High Power, Low Interest */}
+                          <div className="p-5 rounded-2xl bg-white dark:bg-stone-900 border-2 border-coral/40 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-heading font-bold text-coral uppercase tracking-wider">
+                                QUADRANT 2 · KEEP SATISFIED
+                              </span>
+                              <span className="text-[10px] font-subheading text-stone-400">High Power / Low Daily Interest</span>
+                            </div>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">
+                              University Administration & Facility Deans
+                            </h4>
+                            <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                              Hold absolute veto power over auditorium access and budget clearance, yet lack daily operational context — creating severe upstream bottlenecks.
+                            </p>
+                          </div>
+
+                          {/* Low Power, High Interest */}
+                          <div className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-heading font-bold text-stone-500 uppercase tracking-wider">
+                                QUADRANT 3 · KEEP INFORMED
+                              </span>
+                              <span className="text-[10px] font-subheading text-stone-400">Low Power / High Interest</span>
+                            </div>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">
+                              Student Sub-Teams & Attendees
+                            </h4>
+                            <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                              Execute the physical tasks or attend the sessions. Highly invested in accurate schedules, yet have zero power to change administrative delays.
+                            </p>
+                          </div>
+
+                          {/* Low Power, Low Interest */}
+                          <div className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-heading font-bold text-stone-400 uppercase tracking-wider">
+                                QUADRANT 4 · MONITOR
+                              </span>
+                              <span className="text-[10px] font-subheading text-stone-400">Low Power / Low Interest</span>
+                            </div>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">
+                              General Campus Population
+                            </h4>
+                            <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                              Non-participating students and staff. Need to know only if auditorium corridors or parking areas are blocked by the symposium.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* MAP 03: 7-PHASE INFORMATION FLOW */}
+                    {activeMapTab === 2 && (
+                      <div className="space-y-6">
+                        <div className="flex items-center justify-between text-xs font-subheading text-stone-500 border-b border-stone-200 dark:border-stone-800 pb-2">
+                          <span>7-PHASE CHRONOLOGICAL SERVICE LIFECYCLE</span>
+                          <span className="text-coral">Breakdown at Phase 5 & 7</span>
+                        </div>
+
+                        <div className="space-y-2.5">
+                          {[
+                            { num: "P1", name: "Ideation & Theme Definition", owner: "Faculty & Core", status: "Smooth" },
+                            { num: "P2", name: "Administrative Approvals & Room Sanction", owner: "Dean Office", status: "Bottleneck Lag", alert: true },
+                            { num: "P3", name: "Collateral Design & Campus Teasers", owner: "PR Sub-team", status: "Rushed Window" },
+                            { num: "P4", name: "Registration Form Launch", owner: "Tech Sub-team", status: "Form Submitted" },
+                            { num: "P5", name: "Pre-Event Communication Vacuum", owner: "None (System Gap)", status: "Severe Dropout", alert: true },
+                            { num: "P6", name: "Event Day Execution & Turnstile Check-in", owner: "Hospitality & Venue", status: "Panic Queries" },
+                            { num: "P7", name: "Post-Event Certificate Distribution", owner: "Core Team", status: "Unclosed Loop", alert: true },
+                          ].map((phase, pIdx) => (
+                            <div key={pIdx} className={`p-3 rounded-xl border flex items-center justify-between text-xs font-subheading ${
+                              phase.alert 
+                                ? 'bg-coral/5 dark:bg-coral/10 border-coral/30' 
+                                : 'bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-800'
+                            }`}>
+                              <div className="flex items-center gap-3">
+                                <span className={`w-7 h-7 rounded-lg flex items-center justify-center font-heading text-xs font-bold ${
+                                  phase.alert ? 'bg-coral text-white' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
+                                }`}>
+                                  {phase.num}
+                                </span>
+                                <div>
+                                  <h4 className="font-heading text-sm text-charcoal dark:text-white">{phase.name}</h4>
+                                  <p className="text-[11px] text-stone-500">Lead: {phase.owner}</p>
+                                </div>
+                              </div>
+                              <span className={`text-[11px] font-bold ${phase.alert ? 'text-coral' : 'text-stone-500'}`}>
+                                {phase.status}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* MAP 04: TAXONOMY */}
+                    {activeMapTab === 3 && (
+                      <div className="space-y-6">
+                        <div className="flex items-center justify-between text-xs font-subheading text-stone-500 border-b border-stone-200 dark:border-stone-800 pb-2">
+                          <span>EVENT INFORMATION ARCHITECTURE TAXONOMY</span>
+                          <span className="text-lavender">Data Classification Layer</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2">
+                            <span className="text-[10px] font-heading font-bold text-stone-500 uppercase">STATIC PARAMETERS</span>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">Institutional Constants</h4>
+                            <ul className="text-xs font-subheading text-stone-600 dark:text-stone-400 space-y-1">
+                              <li>• Event Title & Sub-theme</li>
+                              <li>• Eligibility & Department</li>
+                              <li>• Registration Fee Policy</li>
+                              <li>• Primary Event Date</li>
+                            </ul>
+                            <div className="text-[10px] font-subheading text-stone-400 pt-2 border-t border-stone-100 dark:border-stone-800">
+                              Update Rate: Zero to rare
+                            </div>
+                          </div>
+
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-coral/30 space-y-2">
+                            <span className="text-[10px] font-heading font-bold text-coral uppercase">DYNAMIC PARAMETERS</span>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">Volatile Logistics</h4>
+                            <ul className="text-xs font-subheading text-stone-600 dark:text-stone-400 space-y-1">
+                              <li>• Room/Auditorium Relocations</li>
+                              <li>• Speaker Delay Announcements</li>
+                              <li>• Lunch Slot Timing Shifts</li>
+                              <li>• Workshop Prerequisites</li>
+                            </ul>
+                            <div className="text-[10px] font-subheading text-coral font-bold pt-2 border-t border-stone-100 dark:border-stone-800">
+                              Update Rate: Highly volatile
+                            </div>
+                          </div>
+
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-lavender/30 space-y-2">
+                            <span className="text-[10px] font-heading font-bold text-lavender uppercase">ACTIONABLE MODULES</span>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">Attendee Touchpoints</h4>
+                            <ul className="text-xs font-subheading text-stone-600 dark:text-stone-400 space-y-1">
+                              <li>• Turnstile QR Check-in Code</li>
+                              <li>• Campus Navigation Directions</li>
+                              <li>• Live Keynote Q&A Submit</li>
+                              <li>• Downloadable PDF Certificate</li>
+                            </ul>
+                            <div className="text-[10px] font-subheading text-lavender font-bold pt-2 border-t border-stone-100 dark:border-stone-800">
+                              Update Rate: User-driven lifecycle
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* MAP 05: DEPENDENCIES NETWORK */}
+                    {activeMapTab === 4 && (
+                      <div className="space-y-6">
+                        <div className="flex items-center justify-between text-xs font-subheading text-stone-500 border-b border-stone-200 dark:border-stone-800 pb-2">
+                          <span>INTER-TEAM CRITICAL PATH DEPENDENCY GRAPH</span>
+                          <span className="text-coral">The Sequential Stalling Effect</span>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-4">
+                          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-subheading">
+                            <div className="p-3 rounded-lg bg-stone-100 dark:bg-stone-800 text-center w-full sm:w-1/4">
+                              <span className="font-heading text-xs text-charcoal dark:text-white block">Step A: Admin</span>
+                              <span className="text-[10px] text-stone-500">Stamps Room Form</span>
+                            </div>
+                            <ArrowRight size={16} className="text-stone-400 shrink-0 rotate-90 sm:rotate-0" />
+                            <div className="p-3 rounded-lg bg-stone-100 dark:bg-stone-800 text-center w-full sm:w-1/4">
+                              <span className="font-heading text-xs text-charcoal dark:text-white block">Step B: Design</span>
+                              <span className="text-[10px] text-stone-500">Prints Final Posters</span>
+                            </div>
+                            <ArrowRight size={16} className="text-stone-400 shrink-0 rotate-90 sm:rotate-0" />
+                            <div className="p-3 rounded-lg bg-stone-100 dark:bg-stone-800 text-center w-full sm:w-1/4">
+                              <span className="font-heading text-xs text-charcoal dark:text-white block">Step C: PR Team</span>
+                              <span className="text-[10px] text-stone-500">Launches Promo Campaign</span>
+                            </div>
+                            <ArrowRight size={16} className="text-stone-400 shrink-0 rotate-90 sm:rotate-0" />
+                            <div className="p-3 rounded-lg bg-coral/10 border border-coral/30 text-center w-full sm:w-1/4 text-coral">
+                              <span className="font-heading text-xs font-bold block">Attendee Reach</span>
+                              <span className="text-[10px]">Compressed to 48 Hours</span>
+                            </div>
+                          </div>
+
+                          <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed border-t border-stone-100 dark:border-stone-800 pt-3">
+                            Diagnosis: Because the physical poster must have the exact room printed on it, the entire promotional workflow is locked until administrative bureaucracy concludes. If the room changes later, physical posters cannot be edited.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* MAP 06: OPPORTUNITY MATRIX */}
+                    {activeMapTab === 5 && (
+                      <div className="space-y-6">
+                        <div className="flex items-center justify-between text-xs font-subheading text-stone-500 border-b border-stone-200 dark:border-stone-800 pb-2">
+                          <span>PAIN POINT TO OPPORTUNITY INTERVENTION MATRIX</span>
+                          <span className="text-lavender">How-Might-We Design Transformations</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2">
+                            <span className="text-[10px] font-heading text-coral font-bold uppercase">PAIN POINT: INFORMAL RELAYS</span>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">Reliance on Key Humans</h4>
+                            <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                              HMW make event logistics resilient to individual absences by establishing an authoritative shared database layer?
+                            </p>
+                          </div>
+
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2">
+                            <span className="text-[10px] font-heading text-lavender font-bold uppercase">PAIN POINT: STATIC MEDIA</span>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">Frozen Printed Posters</h4>
+                            <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                              HMW decouple static event awareness from dynamic daily logistical updates through permanent web links?
+                            </p>
+                          </div>
+
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2">
+                            <span className="text-[10px] font-heading text-coral font-bold uppercase">PAIN POINT: REGISTRATION VOID</span>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">Post-Form Silence</h4>
+                            <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                              HMW turn the Google Form submission into the starting point of an engaging, continuous attendee relationship?
+                            </p>
+                          </div>
+
+                          <div className="p-4 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2">
+                            <span className="text-[10px] font-heading text-lavender font-bold uppercase">PAIN POINT: LOST CERTIFICATES</span>
+                            <h4 className="text-sm font-heading text-charcoal dark:text-white">Manual Post-Event Chasing</h4>
+                            <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                              HMW automate verified check-ins and certificate issuance on the exact same card to close the trust loop?
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                  </div>
+
+                  {/* Summary & Takeaway Banner */}
+                  <div className="p-5 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200 dark:border-stone-800 space-y-2">
+                    <div className="flex items-center gap-2 text-lavender text-xs font-subheading font-bold">
+                      <Sparkles size={14} />
+                      <span>Key Cartographic Finding</span>
+                    </div>
+                    <p className="text-xs sm:text-sm font-subheading text-stone-700 dark:text-stone-300 leading-relaxed">
+                      {currentMap.insight}
+                    </p>
+                  </div>
+
+                </div>
+              );
+            })()}
+
           </div>
+
         </section>
       </RevealOnScroll>
+
+      {/* ============================================================= */}
+      {/* STEP 7: FOUND THE PROBLEM                                     */}
+      {/* ============================================================= */}
+      <RevealOnScroll direction="up">
+        <section id="step-7" className="space-y-8 scroll-mt-20">
+          
+          <div className="space-y-2 border-l-2 border-lavender pl-4">
+            <span className="text-xs font-subheading uppercase tracking-widest text-lavender font-bold block">
+              Step 7 of 8 · Structural Discovery Synthesis
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight">
+              Step 7: Found the Problem
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base max-w-3xl leading-relaxed font-subheading">
+              Synthesizing research interviews across 5 campus cohorts revealed four specific systemic breakdown patterns that repeatedly cripple academic events.
+            </p>
+          </div>
+
+          {/* The 4 Problem Areas (Natively Redesigned Breakdown Cards) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            
+            {/* Pattern 01 */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="w-9 h-9 rounded-2xl bg-lavender/10 text-lavender flex items-center justify-center font-heading text-sm font-bold">
+                  01
+                </span>
+                <span className="text-[11px] font-subheading text-stone-500 uppercase tracking-wider">
+                  Institutional Fragility
+                </span>
+              </div>
+              <h3 className="text-xl font-heading font-normal text-charcoal dark:text-white">
+                Dependency on Specific People
+              </h3>
+              <p className="text-xs sm:text-sm font-subheading text-stone-600 dark:text-stone-300 leading-relaxed">
+                Planning runs almost entirely on informal connections, personal relationships, and mental notes rather than documented roles or written guidelines. Because operational knowledge stays locked in the heads of a few individuals, workflows grind to a complete halt whenever a key faculty lead or student coordinator is unavailable.
+              </p>
+              <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-850 text-xs font-subheading text-lavender font-medium border border-stone-200/60 dark:border-stone-800">
+                Systemic Impact: Single-point bottleneck paralyzes all 9 sub-teams simultaneously.
+              </div>
+            </div>
+
+            {/* Pattern 02 */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="w-9 h-9 rounded-2xl bg-coral/10 text-coral flex items-center justify-center font-heading text-sm font-bold">
+                  02
+                </span>
+                <span className="text-[11px] font-subheading text-stone-500 uppercase tracking-wider">
+                  Signal Degradation
+                </span>
+              </div>
+              <h3 className="text-xl font-heading font-normal text-charcoal dark:text-white">
+                Important Details Get Scrambled
+              </h3>
+              <p className="text-xs sm:text-sm font-subheading text-stone-600 dark:text-stone-300 leading-relaxed">
+                Event updates travel through an extended human chain: from core teams to faculty coordinators, class representatives, and finally attendees — losing accuracy like a game of telephone. Critical deadlines, schedule shifts, and room changes get buried in noisy personal WhatsApp forwards.
+              </p>
+              <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-850 text-xs font-subheading text-coral font-medium border border-stone-200/60 dark:border-stone-800">
+                Systemic Impact: 90%+ redundant panic queries flood organizers on event morning.
+              </div>
+            </div>
+
+            {/* Pattern 03 */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="w-9 h-9 rounded-2xl bg-lavender/10 text-lavender flex items-center justify-center font-heading text-sm font-bold">
+                  03
+                </span>
+                <span className="text-[11px] font-subheading text-stone-500 uppercase tracking-wider">
+                  Upstream Gatekeeping
+                </span>
+              </div>
+              <h3 className="text-xl font-heading font-normal text-charcoal dark:text-white">
+                Delayed Decisions, Rushed Announcements
+              </h3>
+              <p className="text-xs sm:text-sm font-subheading text-stone-600 dark:text-stone-300 leading-relaxed">
+                Organizers cannot announce events until upstream permissions like room bookings, budget sanctions, and guest clearances are signed off by university administration. Because approvals move slowly, promotional windows shrink to days, forcing teams to roll out rushed, incomplete teasers.
+              </p>
+              <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-850 text-xs font-subheading text-lavender font-medium border border-stone-200/60 dark:border-stone-800">
+                Systemic Impact: Prospective attendees remain hesitant to commit to unconfirmed events.
+              </div>
+            </div>
+
+            {/* Pattern 04 */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="w-9 h-9 rounded-2xl bg-coral/10 text-coral flex items-center justify-center font-heading text-sm font-bold">
+                  04
+                </span>
+                <span className="text-[11px] font-subheading text-stone-500 uppercase tracking-wider">
+                  Broken Feedback Loop
+                </span>
+              </div>
+              <h3 className="text-xl font-heading font-normal text-charcoal dark:text-white">
+                Communication Drops Off After Registration
+              </h3>
+              <p className="text-xs sm:text-sm font-subheading text-stone-600 dark:text-stone-300 leading-relaxed">
+                The attendee journey abruptly breaks right after submitting a Google Form. Students receive no digital passes, no calendar invites, and no schedule updates. This vacuum creates chaotic on-ground check-ins and leads to weeks of students fruitlessly chasing organizers for missing certificates.
+              </p>
+              <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-850 text-xs font-subheading text-coral font-medium border border-stone-200/60 dark:border-stone-800">
+                Systemic Impact: Zero institutional memory, broken trust, and high post-event friction.
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+      </RevealOnScroll>
+
+      {/* ============================================================= */}
+      {/* STEP 8: MOVE FORWARD TO ALL THOSE CHANGES                     */}
+      {/* ============================================================= */}
+      <RevealOnScroll direction="up">
+        <section id="step-8" className="space-y-12 scroll-mt-20">
+          
+          <div className="space-y-2 border-l-2 border-coral pl-4">
+            <span className="text-xs font-subheading uppercase tracking-widest text-coral font-bold block">
+              Step 8 of 8 · Systems Redesign & Implementation
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight">
+              Step 8: Move Forward to All Those Changes
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base max-w-3xl leading-relaxed font-subheading">
+              Complete redesign of the Attendee Journey, Updated Information Flow, UI Architecture, Proposed Backend System, and Problem Resolution Matrix.
+            </p>
+          </div>
+
+          {/* ------------------------------------------------------------- */}
+          {/* SUB-SECTION 8.1: REDESIGNED ATTENDEE JOURNEY & FLOW           */}
+          {/* ------------------------------------------------------------- */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-stone-100 dark:border-stone-800 pb-3">
+              <div>
+                <span className="text-[11px] font-subheading font-bold text-lavender uppercase tracking-wider">
+                  Redesign 01 · Service Touchpoint Lifecycle
+                </span>
+                <h3 className="text-xl sm:text-2xl font-heading font-normal text-charcoal dark:text-white mt-0.5">
+                  Attendee Journey & Updated Information Flow
+                </h3>
+              </div>
+              <button
+                onClick={() => setViewingImage("/assets/projects/systems-design/journey_card_05.png")}
+                className="px-3.5 py-1.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-lavender hover:text-white transition-all text-xs font-subheading font-medium text-charcoal dark:text-white flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+              >
+                <ZoomIn size={13} />
+                <span>Zoom Original Slide</span>
+              </button>
+            </div>
+
+            {/* Native Redesigned Interactive Phase Selector */}
+            <div className="space-y-4 pt-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-heading font-normal text-charcoal dark:text-white tracking-wider">
+                  5-PHASE SERVICE LIFECYCLE MODEL
+                </span>
+                <span className="text-[11px] font-subheading text-stone-500">
+                  Select a phase to inspect touchpoint interactions
+                </span>
+              </div>
+
+              {/* Phase Buttons */}
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                {journeyPhases.map((phaseItem, idx) => (
+                  <button
+                    key={phaseItem.phase}
+                    onClick={() => setActiveJourneyPhase(idx)}
+                    className={`p-3 rounded-2xl text-left border transition-all cursor-pointer ${
+                      activeJourneyPhase === idx
+                        ? 'border-lavender bg-charcoal text-white dark:bg-white dark:text-charcoal shadow-sm ring-1 ring-lavender/40'
+                        : 'border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950 text-stone-600 dark:text-stone-400 hover:border-lavender/40'
+                    }`}
+                  >
+                    <span className={`text-[10px] font-heading font-bold block ${activeJourneyPhase === idx ? 'text-coral' : 'text-lavender'}`}>
+                      {phaseItem.phase.split(' ')[0]}
+                    </span>
+                    <span className="text-xs font-subheading font-medium truncate block mt-0.5">
+                      {phaseItem.phase.split(' ')[1] || phaseItem.phase.split(' ')[0]}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Selected Phase Detail Panel */}
+              {(() => {
+                const currentPhase = journeyPhases[activeJourneyPhase];
+                const IconComponent = currentPhase.icon;
+                return (
+                  <div className="p-6 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200 dark:border-stone-800 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-200 dark:border-stone-750 pb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-lavender/10 text-lavender flex items-center justify-center">
+                          <IconComponent size={18} />
+                        </div>
+                        <div>
+                          <span className="text-[11px] font-subheading font-bold text-lavender uppercase tracking-wider">
+                            Phase {activeJourneyPhase + 1} · {currentPhase.role}
+                          </span>
+                          <h4 className="text-base sm:text-lg font-heading font-normal text-charcoal dark:text-white mt-0.5">
+                            {currentPhase.action}
+                          </h4>
+                        </div>
+                      </div>
+                      <span className="text-xs font-subheading px-3 py-1 rounded-full bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 text-charcoal dark:text-white self-start sm:self-auto font-medium">
+                        System State: {currentPhase.state}
+                      </span>
+                    </div>
+
+                    <ul className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      {currentPhase.details.map((bullet, bIdx) => (
+                        <li key={bIdx} className="p-3.5 rounded-xl bg-white dark:bg-stone-900 border border-stone-200/80 dark:border-stone-800 text-xs font-subheading text-stone-700 dark:text-stone-300 leading-relaxed flex items-start gap-2">
+                          <CheckCircle2 size={14} className="text-lavender shrink-0 mt-0.5" />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })()}
+
+              {/* NATIVE REDESIGNED CLOSED-LOOP PROPAGATION FLOW (E.g. Room Change) */}
+              <div className="p-6 rounded-2xl bg-coral/5 dark:bg-coral/10 border border-coral/30 space-y-4">
+                <div className="flex items-center gap-2 text-coral text-xs font-subheading font-bold">
+                  <RefreshCw size={15} />
+                  <span>The Closed-Loop Change Propagation Pattern</span>
+                </div>
+                
+                <p className="text-xs sm:text-sm font-subheading text-stone-700 dark:text-stone-300 leading-relaxed">
+                  Real campus scenario: On event morning, the Keynote Auditorium changes from G-Block AV Room to D-Block Auditorium. Here is how the redesigned system propagates the update without rumors:
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-1">
+                  <div className="p-3 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-center space-y-1">
+                    <span className="text-[10px] font-heading text-coral font-bold block">01 · INPUT</span>
+                    <h5 className="text-xs font-heading text-charcoal dark:text-white">Venue Coordinator</h5>
+                    <p className="text-[11px] font-subheading text-stone-500">Updates room field in backend portal once</p>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-center space-y-1">
+                    <span className="text-[10px] font-heading text-lavender font-bold block">02 · SYNC</span>
+                    <h5 className="text-xs font-heading text-charcoal dark:text-white">Central Database</h5>
+                    <p className="text-[11px] font-subheading text-stone-500">Updates single source of truth in &lt;1 second</p>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 text-center space-y-1">
+                    <span className="text-[10px] font-heading text-coral font-bold block">03 · BROADCAST</span>
+                    <h5 className="text-xs font-heading text-charcoal dark:text-white">Priority Push Alert</h5>
+                    <p className="text-[11px] font-subheading text-stone-500">Auto-sends WhatsApp/SMS text banner</p>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white dark:bg-stone-900 border-2 border-lavender/40 text-center space-y-1">
+                    <span className="text-[10px] font-heading text-lavender font-bold block">04 · CARD REFRESH</span>
+                    <h5 className="text-xs font-heading text-charcoal dark:text-white">Attendee Card</h5>
+                    <p className="text-[11px] font-subheading text-lavender font-medium">Room badge displays "D-Block Auditorium"</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* ------------------------------------------------------------- */}
+          {/* SUB-SECTION 8.2: REDESIGNED UI SPEC & INTERFACE PROTOTYPE    */}
+          {/* ------------------------------------------------------------- */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-stone-100 dark:border-stone-800 pb-3">
+              <div>
+                <span className="text-[11px] font-subheading font-bold text-coral uppercase tracking-wider">
+                  Redesign 02 · Interface Architecture
+                </span>
+                <h3 className="text-xl sm:text-2xl font-heading font-normal text-charcoal dark:text-white mt-0.5">
+                  5-Level Progressive UI Architecture & Live Card Experience
+                </h3>
+              </div>
+              <button
+                onClick={() => setViewingImage("/assets/projects/systems-design/journey_card_06.png")}
+                className="px-3.5 py-1.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-coral hover:text-white transition-all text-xs font-subheading font-medium text-charcoal dark:text-white flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+              >
+                <ZoomIn size={13} />
+                <span>Zoom Original Slide</span>
+              </button>
+            </div>
+
+            {/* 5-Level Architecture Breakdown Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
+              <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-1">
+                <span className="text-[10px] font-heading font-bold text-lavender">LEVEL 01</span>
+                <h4 className="text-xs font-subheading font-bold text-charcoal dark:text-white">Identity</h4>
+                <p className="text-[11px] font-subheading text-stone-500 leading-tight">Name & verified attendee status</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-1">
+                <span className="text-[10px] font-heading font-bold text-coral">LEVEL 02</span>
+                <h4 className="text-xs font-subheading font-bold text-charcoal dark:text-white">Core Details</h4>
+                <p className="text-[11px] font-subheading text-stone-500 leading-tight">Date, time, venue & QR check-in</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-1">
+                <span className="text-[10px] font-heading font-bold text-lavender">LEVEL 03</span>
+                <h4 className="text-xs font-subheading font-bold text-charcoal dark:text-white">Journey Info</h4>
+                <p className="text-[11px] font-subheading text-stone-500 leading-tight">Schedule, speaker bios, dress code</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-1">
+                <span className="text-[10px] font-heading font-bold text-coral">LEVEL 04</span>
+                <h4 className="text-xs font-subheading font-bold text-charcoal dark:text-white">Live Updates</h4>
+                <p className="text-[11px] font-subheading text-stone-500 leading-tight">Dynamic broadcast alert banners</p>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-stone-50 dark:bg-stone-850 border border-stone-200/80 dark:border-stone-800 space-y-1">
+                <span className="text-[10px] font-heading font-bold text-lavender">LEVEL 05</span>
+                <h4 className="text-xs font-subheading font-bold text-charcoal dark:text-white">Post-Event</h4>
+                <p className="text-[11px] font-subheading text-stone-500 leading-tight">Attendance stamp & PDF certificate</p>
+              </div>
+            </div>
+
+            {/* NATIVE HIGH-FIDELITY EVENT JOURNEY CARD PROTOTYPE */}
+            <div className="space-y-4 pt-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 dark:border-stone-800 pb-2">
+                <div>
+                  <span className="text-xs font-heading text-charcoal dark:text-white tracking-wider">
+                    INTERACTIVE EVENT JOURNEY CARD EXPERIENCE
+                  </span>
+                  <p className="text-[11px] font-subheading text-stone-500">
+                    Switch states to observe progressive disclosure across the event lifecycle
+                  </p>
+                </div>
+
+                {/* State Toggle Buttons */}
+                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-stone-100 dark:bg-stone-800 self-start sm:self-auto">
+                  <button
+                    onClick={() => setCardSimulationState('pre')}
+                    className={`px-3 py-1 rounded-lg text-xs font-subheading transition-all cursor-pointer ${
+                      cardSimulationState === 'pre'
+                        ? 'bg-charcoal text-white dark:bg-white dark:text-charcoal font-bold shadow-sm'
+                        : 'text-stone-500 hover:text-charcoal dark:hover:text-white'
+                    }`}
+                  >
+                    Pre-Event
+                  </button>
+                  <button
+                    onClick={() => setCardSimulationState('live')}
+                    className={`px-3 py-1 rounded-lg text-xs font-subheading transition-all cursor-pointer ${
+                      cardSimulationState === 'live'
+                        ? 'bg-coral text-white font-bold shadow-sm'
+                        : 'text-stone-500 hover:text-charcoal dark:hover:text-white'
+                    }`}
+                  >
+                    Live Event Day
+                  </button>
+                  <button
+                    onClick={() => setCardSimulationState('post')}
+                    className={`px-3 py-1 rounded-lg text-xs font-subheading transition-all cursor-pointer ${
+                      cardSimulationState === 'post'
+                        ? 'bg-lavender text-white font-bold shadow-sm'
+                        : 'text-stone-500 hover:text-charcoal dark:hover:text-white'
+                    }`}
+                  >
+                    Post-Event
+                  </button>
+                </div>
+              </div>
+
+              {/* Mobile Card Mockup Viewport */}
+              <div className="max-w-md mx-auto p-5 sm:p-6 rounded-3xl bg-stone-900 text-white shadow-2xl border border-stone-800 space-y-4 relative">
+                
+                {/* Level 01: Identity Header */}
+                <div className="flex items-center justify-between border-b border-stone-800 pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-lavender flex items-center justify-center font-heading text-xs text-white font-bold">
+                      TS
+                    </div>
+                    <div>
+                      <h5 className="text-sm font-heading tracking-wide">Hi, Tanya Sharma</h5>
+                      <span className="text-[10px] font-subheading text-stone-400">UID: DES-2026-4821</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-subheading px-2.5 py-0.5 rounded-full bg-lavender/20 text-lavender border border-lavender/30 font-medium">
+                    Verified Delegate
+                  </span>
+                </div>
+
+                {/* Level 04 (Live State Only): Emergency Alert Banner */}
+                {cardSimulationState === 'live' && (
+                  <div className="p-3 rounded-xl bg-coral/20 border border-coral text-coral space-y-0.5 animate-pulse">
+                    <div className="flex items-center gap-1.5 text-xs font-heading font-bold">
+                      <AlertCircle size={14} />
+                      <span>LIVE BROADCAST: VENUE RELOCATION</span>
+                    </div>
+                    <p className="text-[11px] font-subheading text-white leading-tight">
+                      Keynote shifted to <strong>D-Block Auditorium</strong>. Turnstile entry at Gate 3.
+                    </p>
+                  </div>
+                )}
+
+                {/* Level 02: Core Event Details */}
+                <div className="p-4 rounded-2xl bg-stone-800/80 border border-stone-700/60 space-y-3">
+                  <div>
+                    <span className="text-[10px] font-heading text-coral uppercase tracking-wider block">
+                      CAMPUS DESIGN SYMPOSIUM 2026
+                    </span>
+                    <h4 className="text-base font-heading font-normal">
+                      Systems & Service Futures
+                    </h4>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs font-subheading text-stone-300">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar size={13} className="text-lavender shrink-0" />
+                      <span>Oct 24, 2026</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Clock size={13} className="text-coral shrink-0" />
+                      <span>09:30 AM IST</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 col-span-2">
+                      <MapPin size={13} className="text-lavender shrink-0" />
+                      <span>D-Block Auditorium (Gate 3 Entry)</span>
+                    </div>
+                  </div>
+
+                  {/* QR Pass */}
+                  <div className="p-3 rounded-xl bg-stone-900 border border-stone-700 flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] font-heading text-stone-400 block">TURNSTILE FAST-PASS</span>
+                      <span className="text-xs font-mono text-stone-300">#PASS-8842-DS</span>
+                    </div>
+                    <div className="w-12 h-12 bg-white rounded-lg p-1 flex items-center justify-center">
+                      <QrCode size={38} className="text-black" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Level 03 / 05 Content based on state */}
+                {cardSimulationState === 'pre' && (
+                  <div className="p-3.5 rounded-xl bg-stone-800/60 border border-stone-700/40 space-y-2">
+                    <span className="text-[10px] font-heading text-lavender font-bold uppercase">PRE-EVENT PREPARATION</span>
+                    <ul className="text-xs font-subheading text-stone-300 space-y-1">
+                      <li>✓ Laptop required for afternoon UI workshop</li>
+                      <li>✓ Student ID card mandatory for main campus turnstiles</li>
+                      <li>✓ Free parking allocated at South Gate Lot B</li>
+                    </ul>
+                  </div>
+                )}
+
+                {cardSimulationState === 'live' && (
+                  <div className="p-3.5 rounded-xl bg-stone-800/60 border border-stone-700/40 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-heading text-coral font-bold uppercase">LIVE SCHEDULE NOW</span>
+                      <span className="text-[10px] font-subheading text-stone-400">10:15 AM</span>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-stone-900 border border-stone-700 space-y-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-heading text-white">Opening Keynote: Institutional Scale</span>
+                        <span className="text-[10px] text-coral font-bold">IN PROGRESS</span>
+                      </div>
+                      <p className="text-[11px] font-subheading text-stone-400">Dr. Rajesh Varma · Main Stage</p>
+                    </div>
+                  </div>
+                )}
+
+                {cardSimulationState === 'post' && (
+                  <div className="p-3.5 rounded-xl bg-lavender/10 border border-lavender/30 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-heading text-lavender font-bold uppercase">FULFILLMENT COMPLETE</span>
+                      <span className="text-[10px] font-subheading text-stone-400">Verified Oct 24</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-stone-900 border border-stone-700 flex items-center justify-between">
+                      <div>
+                        <h6 className="text-xs font-heading text-white">Official Certificate of Attendance</h6>
+                        <span className="text-[10px] font-subheading text-stone-400">Digitally Stamped & Verified</span>
+                      </div>
+                      <button className="px-3 py-1.5 rounded-lg bg-lavender text-white text-xs font-subheading font-medium flex items-center gap-1 hover:bg-lavender/90">
+                        <FileText size={12} />
+                        <span>Download PDF</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="text-center pt-1">
+                  <span className="text-[10px] font-subheading text-stone-500">
+                    Event Journey Card · Single Permanent URL · No App Required
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          {/* ------------------------------------------------------------- */}
+          {/* SUB-SECTION 8.3: REDESIGNED PROPOSED BACKEND ARCHITECTURE     */}
+          {/* ------------------------------------------------------------- */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-stone-100 dark:border-stone-800 pb-3">
+              <div>
+                <span className="text-[11px] font-subheading font-bold text-lavender uppercase tracking-wider">
+                  Redesign 03 · Macro Pipeline Architecture
+                </span>
+                <h3 className="text-xl sm:text-2xl font-heading font-normal text-charcoal dark:text-white mt-0.5">
+                  Proposed Multi-Team Ingestion & Distribution Backend
+                </h3>
+              </div>
+              <button
+                onClick={() => setViewingImage("/assets/projects/systems-design/journey_card_07.png")}
+                className="px-3.5 py-1.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-lavender hover:text-white transition-all text-xs font-subheading font-medium text-charcoal dark:text-white flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+              >
+                <ZoomIn size={13} />
+                <span>Zoom Original Slide</span>
+              </button>
+            </div>
+
+            {/* Native Redesigned Pipeline Diagram */}
+            <div className="p-6 rounded-2xl bg-stone-50 dark:bg-stone-950 border border-stone-200 dark:border-stone-800 space-y-6">
+              <span className="text-[11px] font-heading text-stone-400 dark:text-stone-500 uppercase tracking-widest block">
+                THREE-TIER SYSTEM PIPELINE
+              </span>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                
+                {/* Stage 1 */}
+                <div className="p-5 rounded-2xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center font-heading text-xs font-bold">1</span>
+                    <span className="text-xs font-heading font-bold text-charcoal dark:text-white">9 Sub-Team Inputs</span>
+                  </div>
+                  <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                    Modular submission views. Teams edit only their specific scope:
+                  </p>
+                  <ul className="text-[11px] font-subheading text-stone-500 space-y-1">
+                    <li>• Venue Team → Room & building mappings</li>
+                    <li>• Program Team → Live schedule & speaker bios</li>
+                    <li>• Registration Team → Form & delegate status</li>
+                    <li>• Hospitality Team → Check-in & lunch badges</li>
+                  </ul>
+                  <div className="text-[10px] font-subheading text-lavender font-medium pt-1">
+                    Output: Validated JSON updates
+                  </div>
+                </div>
+
+                {/* Stage 2 */}
+                <div className="p-5 rounded-2xl bg-white dark:bg-stone-900 border-2 border-lavender/40 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-lg bg-lavender text-white flex items-center justify-center font-heading text-xs font-bold">2</span>
+                    <span className="text-xs font-heading font-bold text-lavender">Central Event Database</span>
+                  </div>
+                  <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                    The single authoritative source of truth:
+                  </p>
+                  <ul className="text-[11px] font-subheading text-stone-500 space-y-1">
+                    <li>• Relational state machine & version log</li>
+                    <li>• Real-time webhook change listeners</li>
+                    <li>• Permission verification & admin audit trail</li>
+                    <li>• Automated PDF certificate generation engine</li>
+                  </ul>
+                  <div className="text-[10px] font-subheading text-lavender font-bold pt-1">
+                    Latency: &lt;1 second database sync
+                  </div>
+                </div>
+
+                {/* Stage 3 */}
+                <div className="p-5 rounded-2xl bg-white dark:bg-stone-900 border-2 border-coral/40 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="w-6 h-6 rounded-lg bg-coral text-white flex items-center justify-center font-heading text-xs font-bold">3</span>
+                    <span className="text-xs font-heading font-bold text-coral">Attendee Cards & Dispatch</span>
+                  </div>
+                  <p className="text-xs font-subheading text-stone-600 dark:text-stone-400 leading-relaxed">
+                    Multi-channel push and pull delivery:
+                  </p>
+                  <ul className="text-[11px] font-subheading text-stone-500 space-y-1">
+                    <li>• Instant SSR web card rendering</li>
+                    <li>• WhatsApp & SMS high-priority notifications</li>
+                    <li>• Live client SSE (Server-Sent Events) auto-refresh</li>
+                    <li>• One-click PDF download & verification</li>
+                  </ul>
+                  <div className="text-[10px] font-subheading text-coral font-bold pt-1">
+                    Reach: 100% of registered attendees
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          {/* ------------------------------------------------------------- */}
+          {/* SUB-SECTION 8.4: REDESIGNED PROBLEM VS. RESOLUTION MATRIX     */}
+          {/* ------------------------------------------------------------- */}
+          <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 border-b border-stone-100 dark:border-stone-800 pb-3">
+              <div>
+                <span className="text-[11px] font-subheading font-bold text-coral uppercase tracking-wider">
+                  Redesign 04 · Comparative Impact Analysis
+                </span>
+                <h3 className="text-xl sm:text-2xl font-heading font-normal text-charcoal dark:text-white mt-0.5">
+                  Systemic Problem vs. Resolution Matrix
+                </h3>
+              </div>
+              <button
+                onClick={() => setViewingImage("/assets/projects/systems-design/journey_card_08.png")}
+                className="px-3.5 py-1.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-coral hover:text-white transition-all text-xs font-subheading font-medium text-charcoal dark:text-white flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+              >
+                <ZoomIn size={13} />
+                <span>Zoom Original Slide</span>
+              </button>
+            </div>
+
+            {/* Systematic Resolution Table */}
+            <div className="overflow-x-auto pt-1">
+              <table className="w-full text-left border-collapse text-xs font-subheading">
+                <thead>
+                  <tr className="border-b border-stone-200 dark:border-stone-800 text-[11px] font-bold text-stone-400 uppercase tracking-wider">
+                    <th className="py-3 pr-4 font-subheading w-1/3 text-coral">Existing Campus Breakdown</th>
+                    <th className="py-3 pl-4 font-subheading w-2/3 text-lavender">How Event Journey Card Resolves It</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-stone-100 dark:divide-stone-850">
+                  <tr>
+                    <td className="py-4 pr-4 font-medium text-charcoal dark:text-white align-top">
+                      Dependency on specific people
+                    </td>
+                    <td className="py-4 pl-4 text-stone-600 dark:text-stone-300 leading-relaxed align-top">
+                      Attendees no longer need to track down a particular organizer or faculty lead for answers. All critical logistical information is accessible directly through their permanent personal web card link.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-4 pr-4 font-medium text-charcoal dark:text-white align-top">
+                      Important details get scrambled
+                    </td>
+                    <td className="py-4 pl-4 text-stone-600 dark:text-stone-300 leading-relaxed align-top">
+                      Information from all 9 sub-teams is unified into one structured event database instead of being scattered across unverified WhatsApp group forwards, circulars, and word-of-mouth.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-4 pr-4 font-medium text-charcoal dark:text-white align-top">
+                      Delayed decisions & rushed announcements
+                    </td>
+                    <td className="py-4 pl-4 text-stone-600 dark:text-stone-300 leading-relaxed align-top">
+                      When an important parameter changes on event morning, the responsible sub-team updates the central database once. The update propagates to all attendee cards in under 5 minutes.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="py-4 pr-4 font-medium text-charcoal dark:text-white align-top">
+                      Communication drops off after registration
+                    </td>
+                    <td className="py-4 pl-4 text-stone-600 dark:text-stone-300 leading-relaxed align-top">
+                      Registration becomes the beginning of the attendee journey rather than the end. The attendee receives continuous guidance before the event, live updates during, and automatic PDF certificate fulfillment after.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+        </section>
+      </RevealOnScroll>
+
+      {/* ============================================================= */}
+      {/* FINAL REFLECTION: DESIGN TAKEAWAYS (NO THANK YOU SLIDE)       */}
+      {/* ============================================================= */}
+      <RevealOnScroll direction="up">
+        <section className="space-y-8 pt-4">
+          
+          <div className="space-y-2 border-l-2 border-lavender pl-4">
+            <span className="text-xs font-subheading uppercase tracking-widest text-lavender font-bold block">
+              Systems Design Synthesis
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-heading font-normal text-charcoal dark:text-white tracking-tight">
+              Service Systems Reflection & Takeaways
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-sm sm:text-base max-w-3xl leading-relaxed font-subheading">
+              Final thoughts on designing for institutional environments and how systems empathy creates resilient communication cultures.
+            </p>
+          </div>
+
+          {/* 3 Core Designer Takeaways */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2.5">
+              <span className="text-xs font-heading text-lavender font-bold">TAKEAWAY 01</span>
+              <h4 className="text-base font-heading font-normal text-charcoal dark:text-white">
+                Respect Organic Campus Ecosystems
+              </h4>
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-300 leading-relaxed">
+                Systems fail when they demand radical, top-down behavioral shifts. Delivering featherweight mobile links over existing messaging channels ensures 100% reach without app-store friction.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2.5">
+              <span className="text-xs font-heading text-coral font-bold">TAKEAWAY 02</span>
+              <h4 className="text-base font-heading font-normal text-charcoal dark:text-white">
+                Empower Sub-teams Through Modularity
+              </h4>
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-300 leading-relaxed">
+                Rather than attempting to eliminate human student coordinators, good systems design protects their autonomy by providing clear boundaries of operational ownership within a shared data model.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-3xl bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 space-y-2.5">
+              <span className="text-xs font-heading text-lavender font-bold">TAKEAWAY 03</span>
+              <h4 className="text-base font-heading font-normal text-charcoal dark:text-white">
+                The Service Loop Closes at Verification
+              </h4>
+              <p className="text-xs font-subheading text-stone-600 dark:text-stone-300 leading-relaxed">
+                An event experience does not terminate when attendees leave the auditorium. Automating attendance verification and one-click certificate fulfillment completes the institutional trust loop.
+              </p>
+            </div>
+          </div>
+
+        </section>
+      </RevealOnScroll>
+
     </article>
   );
 };

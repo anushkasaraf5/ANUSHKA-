@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
+import { useTheme } from './ThemeContext';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 16);
+      setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -17,113 +19,111 @@ const Navbar: React.FC = () => {
     e.preventDefault();
     const targetId = href.replace('#', '');
     const element = document.getElementById(targetId);
-
+    
     if (element) {
-      const headerOffset = 88;
+      const headerOffset = 100;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - headerOffset;
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth',
+        behavior: "smooth"
       });
       setMobileMenuOpen(false);
     }
   };
 
   const navLinks = [
-    { name: 'Work', href: '#work' },
     { name: 'About', href: '#about' },
-    { name: 'Capabilities', href: '#skills' },
+    { name: 'Skills', href: '#skills' },
+    { name: 'Work', href: '#work' },
     { name: 'Resume', href: '#resume' },
+    { name: 'Contact', href: '#contact' },
   ];
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? 'bg-[#FAF8F6]/90 dark:bg-stone-950/90 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800/80 py-3.5'
-            : 'bg-transparent py-5'
+      <nav 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex justify-center ${
+          isScrolled ? 'pt-4' : 'pt-6'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-8">
-          {/* Zone 1: Brand Wordmark */}
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-              setMobileMenuOpen(false);
-            }}
-            className="font-editorial text-xl tracking-tight text-charcoal dark:text-cream whitespace-nowrap shrink-0 hover:opacity-80 transition-opacity"
+        <div 
+          className={`
+            relative px-6 py-3 rounded-full flex items-center justify-between
+            transition-all duration-300
+            ${isScrolled 
+              ? 'w-[90%] md:w-[70%] lg:w-[60%] bg-white/80 dark:bg-stone-900/80 backdrop-blur-md shadow-lg border border-white/20 dark:border-stone-800' 
+              : 'w-full container bg-transparent'
+            }
+          `}
+        >
+          <a 
+            href="#" 
+            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            className={`text-lg font-heading font-normal tracking-tight uppercase z-50 relative transition-colors ${
+              isScrolled ? 'text-charcoal dark:text-cream' : 'text-charcoal dark:text-cream'
+            }`}
           >
-            Anushka Saraf<span className="text-coral">.</span>
+            AS<span className="text-coral">.</span>
           </a>
 
-          {/* Zone 2: Clean Single-Line Navigation Links */}
-          <nav aria-label="Primary navigation" className="hidden md:flex items-center gap-8">
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-1">
             {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
+              <a 
+                key={link.name} 
+                href={link.href} 
                 onClick={(e) => handleNavClick(e, link.href)}
-                className="relative font-clean text-sm font-medium text-stone-600 hover:text-charcoal dark:text-stone-400 dark:hover:text-white transition-colors whitespace-nowrap shrink-0 py-1 after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-px after:bg-coral after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:origin-left"
+                className="px-4 py-2 rounded-full font-subheading text-sm font-medium transition-colors text-neutral-gray hover:text-coral hover:bg-cream dark:text-stone-300 dark:hover:text-coral dark:hover:bg-stone-800"
               >
                 {link.name}
               </a>
             ))}
-          </nav>
+            
+            <div className="h-4 w-px bg-stone-300 dark:bg-stone-700 mx-2"></div>
 
-          {/* Zone 3: Single Primary Action + Mobile Drawer Trigger */}
-          <div className="flex items-center gap-3 shrink-0">
-            <a
-              href="#contact"
-              onClick={(e) => handleNavClick(e, '#contact')}
-              className="hidden md:inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-charcoal text-cream dark:bg-cream dark:text-stone-950 font-clean text-xs font-medium tracking-wide hover:bg-coral dark:hover:bg-coral dark:hover:text-white transition-colors whitespace-nowrap shrink-0"
+            <button 
+              onClick={toggleTheme}
+              className="ml-1 p-2 rounded-full text-neutral-gray hover:text-coral hover:bg-cream dark:text-stone-300 dark:hover:text-coral dark:hover:bg-stone-800 transition-colors"
+              aria-label="Toggle theme"
             >
-              <span>Get in Touch</span>
-              <ArrowUpRight size={14} />
-            </a>
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+          </div>
 
-            <button
-              type="button"
+          {/* Mobile Toggle */}
+          <div className="flex items-center gap-2 md:hidden z-50">
+            <button 
+              onClick={toggleTheme}
+              className="p-2 rounded-full text-charcoal dark:text-cream bg-cream dark:bg-stone-800"
+            >
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+            
+            <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-charcoal dark:text-cream border border-stone-200 dark:border-stone-800 bg-white/80 dark:bg-stone-900/80"
-              aria-label="Toggle navigation menu"
+              className="p-2 rounded-full text-charcoal dark:text-cream bg-cream dark:bg-stone-800"
             >
-              {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Mobile Navigation Drawer */}
+      {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-[#FAF8F6]/98 dark:bg-stone-950/98 backdrop-blur-xl z-40 flex flex-col justify-between px-6 pt-28 pb-12 md:hidden animate-fadeIn">
-          <div className="flex flex-col space-y-6">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className="text-3xl font-editorial font-normal tracking-tight text-charcoal dark:text-cream hover:text-coral dark:hover:text-coral transition-colors border-b border-stone-200/70 dark:border-stone-800/70 pb-4"
-              >
-                {link.name}
-              </a>
-            ))}
-            <a
-              href="#contact"
-              onClick={(e) => handleNavClick(e, '#contact')}
-              className="text-3xl font-editorial italic text-coral tracking-tight pt-2"
+        <div className="fixed inset-0 bg-cream/95 dark:bg-stone-950/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center space-y-6 md:hidden animate-fadeIn">
+          {navLinks.map((link) => (
+            <a 
+              key={link.name} 
+              href={link.href} 
+              onClick={(e) => handleNavClick(e, link.href)}
+              className="text-3xl font-heading font-normal tracking-tight text-charcoal dark:text-cream hover:text-coral dark:hover:text-coral transition-colors"
             >
-              Get in Touch →
+              {link.name}
             </a>
-          </div>
-
-          <p className="font-mono text-xs uppercase tracking-widest text-stone-500">
-            Communication Design · Systems · Typography
-          </p>
+          ))}
         </div>
       )}
     </>
